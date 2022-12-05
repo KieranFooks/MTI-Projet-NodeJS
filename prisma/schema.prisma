@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id                Int            @id @default(autoincrement())
+  email             String         @unique
+  name              String
+  password          String
+  blockchainAddress String
+  role              Role           @default(USER)
+  team              Team?          @relation(fields: [teamId], references: [id])
+  teamId            Int?
+  buyTransactions   Transactions[] @relation("Buyer")
+  sellTransactions  Transactions[] @relation("Seller")
+  userRating        UserRating[]
+}
+
+model Team {
+  id                Int          @id @default(autoincrement())
+  name              String
+  balance           Float        @default(0)
+  users             User[]
+  createdCollection Collection[]
+  ownedNFT          NFT[]
+}
+
+model NFT {
+  id           Int            @id @default(autoincrement())
+  name         String
+  image        String
+  price        Float
+  status       Status         @default(DRAFT)
+  team         Team           @relation(fields: [teamId], references: [id])
+  transactions Transactions[]
+  collection   Collection?    @relation(fields: [collectionId], references: [id])
+  collectionId Int?
+  teamId       Int
+  userRating   UserRating[]
+}
+
+model Transactions {
+  id        Int      @id @default(autoincrement())
+  nft       NFT      @relation(fields: [NFTId], references: [id])
+  seller    User     @relation(fields: [sellerId], references: [id], "Seller")
+  buyer     User     @relation(fields: [buyerId], references: [id], "Buyer")
+  amount    Float
+  timestamp DateTime @default(now())
+  NFTId     Int
+  sellerId  Int
+  buyerId   Int
+}
+
+model Collection {
+  id                Int       @id @default(autoincrement())
+  name              String
+  logo              String?
+  status            Status    @default(DRAFT)
+  timeAutoArchiving DateTime?
+  NFTs              NFT[]
+  creatorTeam       Team      @relation(fields: [creatorTeamId], references: [id])
+  creatorTeamId     Int
+}
+
+model UserRating {
+  id        Int      @id @default(autoincrement())
+  nft       NFT      @relation(fields: [NFTId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  rate      Int
+  timestamp DateTime @default(now())
+  NFTId     Int
+  userId    Int
+}
