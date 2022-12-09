@@ -30,10 +30,10 @@ export class NFTModel {
   transactions: TransactionsModel[];
 
   @Field(() => CollectionModel, { nullable: true })
-  collection?: CollectionModel | null;
+  collection: CollectionModel | null;
 
   @Field(() => [UserRatingModel], { nullable: 'items' })
-  userRating?: UserRatingModel[];
+  userRating: UserRatingModel[];
 }
 
 registerEnumType(Status, {
