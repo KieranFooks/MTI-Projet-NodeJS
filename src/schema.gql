@@ -1,0 +1,91 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type userRating {
+  id: Int!
+  nft: nft!
+  user: user!
+  rate: Int!
+  timestamp: Timestamp!
+  nftId: Int!
+  userId: Int!
+}
+
+"""
+`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
+
+type transactions {
+  id: Int!
+  nft: nft!
+  seller: user!
+  buyer: user!
+  amount: Float!
+  timestamp: Timestamp!
+}
+
+type nft {
+  id: Int!
+  name: String!
+  image: String!
+  price: String!
+  status: Status!
+  role: team!
+  transactions: [transactions]!
+  collection: collection
+  userRating: [userRating]!
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+type collection {
+  id: Int!
+  name: String!
+  email: String
+  status: Status!
+  timeAutoArchive: Timestamp!
+  nfts: [nft]!
+  creatorTeam: team!
+}
+
+type team {
+  id: Int!
+  name: String!
+  balance: Float!
+  users: [user!]!
+  createdCollections: [collection]!
+  ownedNFTs: [nft]!
+}
+
+type user {
+  id: Int!
+  email: String!
+  name: String!
+  password: String!
+  blockchainAddress: String!
+  role: Role!
+  team: team
+  buyTransactions: [transactions]!
+  sellTransactions: [transactions]!
+  userRating: [userRating]!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+type Query {
+  allUsers: [user!]
+  user(userUniqueInput: UserUniqueInput!): user
+}
+
+input UserUniqueInput {
+  id: Int
+}
