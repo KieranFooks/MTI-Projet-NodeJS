@@ -19,10 +19,4 @@ export class UserRatingModel {
 
   @Field(() => Date)
   timestamp: Date;
-
-  @Field(() => Int)
-  nftId: number;
-
-  @Field(() => Int)
-  userId: number;
 }

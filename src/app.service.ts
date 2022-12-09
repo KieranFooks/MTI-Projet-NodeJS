@@ -6,14 +6,6 @@ import { PrismaClient, Role, Status } from '@prisma/client';
 export class AppService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
-
-    registerEnumType(Role, {
-      name: 'Role',
-    });
-
-    registerEnumType(Status, {
-      name: 'Status',
-    });
   }
 
   async enableShutdownHooks(app: INestApplication) {

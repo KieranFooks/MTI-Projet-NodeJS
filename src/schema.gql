@@ -2,14 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type userRating {
+type collection {
   id: Int!
-  nft: nft!
-  user: user!
-  rate: Int!
-  timestamp: Timestamp!
-  nftId: Int!
-  userId: Int!
+  name: String!
+  email: String
+  status: Status!
+  timeAutoArchive: Timestamp!
+  nfts: [nft]!
+  creatorTeam: team!
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
 """
@@ -17,12 +23,11 @@ type userRating {
 """
 scalar Timestamp
 
-type transactions {
+type userRating {
   id: Int!
   nft: nft!
-  seller: user!
-  buyer: user!
-  amount: Float!
+  user: user!
+  rate: Int!
   timestamp: Timestamp!
 }
 
@@ -38,29 +43,13 @@ type nft {
   userRating: [userRating]!
 }
 
-enum Status {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-type collection {
+type transactions {
   id: Int!
-  name: String!
-  email: String
-  status: Status!
-  timeAutoArchive: Timestamp!
-  nfts: [nft]!
-  creatorTeam: team!
-}
-
-type team {
-  id: Int!
-  name: String!
-  balance: Float!
-  users: [user!]!
-  createdCollections: [collection]!
-  ownedNFTs: [nft]!
+  nft: nft!
+  seller: user!
+  buyer: user!
+  amount: Float!
+  timestamp: Timestamp!
 }
 
 type user {
@@ -81,11 +70,39 @@ enum Role {
   ADMIN
 }
 
+type team {
+  id: Int!
+  name: String!
+  balance: Float!
+  users: [user!]!
+  createdCollection: [collection]!
+  ownedNFT: [nft]!
+}
+
 type Query {
-  allUsers: [user!]
+  allUsers: [user]!
   user(userUniqueInput: UserUniqueInput!): user
+  teams: [team!]!
+  team(id: Float!): team
 }
 
 input UserUniqueInput {
   id: Int
+}
+
+type Mutation {
+  signupUser(user: UserCreateInput!): user!
+  createTeam(teamCreateInput: TeamCreateInput!): team!
+}
+
+input UserCreateInput {
+  email: String!
+  name: String!
+  password: String!
+  blockchainAddress: String!
+}
+
+input TeamCreateInput {
+  name: String!
+  balance: Float
 }

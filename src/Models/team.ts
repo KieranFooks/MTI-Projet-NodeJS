@@ -19,8 +19,8 @@ export class TeamModel {
   users: UserModel[];
 
   @Field(() => [CollectionModel], { nullable: 'items' })
-  createdCollections: CollectionModel[];
+  createdCollection: CollectionModel[];
 
   @Field(() => [NFTModel], { nullable: 'items' })
-  ownedNFTs: NFTModel[];
+  ownedNFT: NFTModel[];
 }

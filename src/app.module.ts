@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AppService } from './app.service';
+import { TeamResolver } from './resolver.team';
 import { UserResolver } from './resolver.user';
 
 @Module({
@@ -16,6 +17,6 @@ import { UserResolver } from './resolver.user';
     }),
   ],
   controllers: [],
-  providers: [AppService, UserResolver],
+  providers: [AppService, UserResolver, TeamResolver],
 })
 export class AppModule {}
