@@ -40,6 +40,7 @@
     "apollo-server-express": "^3.11.1",
     "bcrypt": "^5.1.0",
     "graphql": "^16.6.0",
+    "jest-mock-extended": "^3.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "prisma": "^4.7.1",
@@ -87,7 +88,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/prismaMock.ts"
+    ],
+    "clearMocks": true,
+    "preset": "ts-jest"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

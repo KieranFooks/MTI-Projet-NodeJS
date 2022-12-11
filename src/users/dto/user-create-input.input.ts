@@ -7,7 +7,5 @@ export class UserCreateInput {
   @Field()
   name: string;
   @Field()
-  password: string;
-  @Field()
   blockchainAddress: string;
 }

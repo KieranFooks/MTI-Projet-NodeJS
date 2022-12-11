@@ -17,9 +17,6 @@ export class UserModel {
   name: string;
 
   @Field(() => String)
-  password: string;
-
-  @Field(() => String)
   blockchainAddress: string;
 
   @Field(() => Role)

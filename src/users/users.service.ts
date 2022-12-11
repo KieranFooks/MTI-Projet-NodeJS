@@ -10,22 +10,30 @@ import { AuthService } from 'src/common/auth/auth.service';
 import { GraphService } from 'src/common/graph/graph.service';
 import { LoginInput } from './dto/login-input.input';
 import { UserCreateInput } from './dto/user-create-input.input';
+import { PaginationInput } from './dto/pagination.input';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(GraphService) private graphService: GraphService,
+    @Inject(GraphService) private graphService: PrismaClient,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
 
-  async findAll() {
+  setGraphService(prismaService: PrismaClient) {
+    this.graphService = prismaService;
+  }
+
+  async findAll(pagination: PaginationInput | null) {
     return this.graphService.user.findMany({
       include: {
         buyTransactions: true,
         team: true,
         userRating: true,
       },
+      take: pagination?.limit,
+      skip: pagination?.offset,
     });
   }
 
@@ -52,6 +60,12 @@ export class UsersService {
   }
 
   async create(user: UserCreateInput) {
+    if (!/^0x[a-fA-F0-9]{40}$/.test(user.blockchainAddress)) {
+      throw new BadRequestException('Invalid blockchain address');
+    }
+
+    const password = Math.random().toString(36).slice(-8);
+
     const foundUser = await this.graphService.user.findUnique({
       where: {
         email: user.email,
@@ -61,8 +75,8 @@ export class UsersService {
       throw new ConflictException('Email already used');
     }
 
-    const encryptedPassword = await bcrypt.hash(user.password, 10);
-    return this.graphService.user.create({
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    await this.graphService.user.create({
       data: {
         email: user.email,
         name: user.name,
@@ -70,6 +84,7 @@ export class UsersService {
         blockchainAddress: user.blockchainAddress,
       },
     });
+    return password;
   }
 
   async login(loginUserInput: LoginInput) {

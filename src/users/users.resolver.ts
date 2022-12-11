@@ -8,6 +8,7 @@ import { LoggedUserOutput } from './dto/logged-user.output';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
 import { Example } from './users.interceptor';
+import { PaginationInput } from './dto/pagination.input';
 
 @Resolver(UserModel)
 export class UsersResolver {
@@ -15,8 +16,11 @@ export class UsersResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [UserModel], { nullable: 'items' })
-  async allUsers() {
-    return this.usersService.findAll();
+  async allUsers(
+    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    pagination: PaginationInput | null,
+  ) {
+    return this.usersService.findAll(pagination);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -26,7 +30,7 @@ export class UsersResolver {
     return this.usersService.findOne(id);
   }
 
-  @Mutation(() => UserModel, { nullable: true })
+  @Mutation(() => String, { nullable: true })
   async signUp(@Args('user') user: UserCreateInput) {
     return this.usersService.create(user);
   }
