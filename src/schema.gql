@@ -2,20 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type collection {
+type userRating {
   id: Int!
-  name: String!
-  email: String
-  status: Status!
-  timeAutoArchive: Timestamp!
-  nfts: [nft]!
-  creatorTeam: team!
-}
-
-enum Status {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
+  nft: nft!
+  user: user!
+  rate: Int!
+  timestamp: Timestamp!
 }
 
 """
@@ -23,11 +15,12 @@ enum Status {
 """
 scalar Timestamp
 
-type userRating {
+type transactions {
   id: Int!
   nft: nft!
-  user: user!
-  rate: Int!
+  seller: user!
+  buyer: user!
+  amount: Float!
   timestamp: Timestamp!
 }
 
@@ -43,13 +36,29 @@ type nft {
   userRating: [userRating]!
 }
 
-type transactions {
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+type collection {
   id: Int!
-  nft: nft!
-  seller: user!
-  buyer: user!
-  amount: Float!
-  timestamp: Timestamp!
+  name: String!
+  email: String
+  status: Status!
+  timeAutoArchive: Timestamp!
+  nfts: [nft]!
+  creatorTeam: team!
+}
+
+type team {
+  id: Int!
+  name: String!
+  balance: Float!
+  users: [user!]!
+  createdCollection: [collection]!
+  ownedNFT: [nft]!
 }
 
 type user {
@@ -70,29 +79,17 @@ enum Role {
   ADMIN
 }
 
-type team {
-  id: Int!
-  name: String!
-  balance: Float!
-  users: [user!]!
-  createdCollection: [collection]!
-  ownedNFT: [nft]!
+type LoggedUserOutput {
+  """Generated access_token of the user"""
+  access_token: String!
 }
 
 type Query {
   allUsers: [user]!
-  user(userUniqueInput: UserUniqueInput!): user
+  user(id: Int!): user
+  signUp(user: UserCreateInput!): user
   teams: [team!]!
   team(id: Float!): team
-}
-
-input UserUniqueInput {
-  id: Int
-}
-
-type Mutation {
-  signupUser(user: UserCreateInput!): user!
-  createTeam(teamCreateInput: TeamCreateInput!): team!
 }
 
 input UserCreateInput {
@@ -100,6 +97,16 @@ input UserCreateInput {
   name: String!
   password: String!
   blockchainAddress: String!
+}
+
+type Mutation {
+  signIn(user: LoginInput!): LoggedUserOutput
+  createTeam(teamCreateInput: TeamCreateInput!): team!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 input TeamCreateInput {

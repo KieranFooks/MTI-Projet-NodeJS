@@ -1,9 +1,8 @@
 import { Injectable, OnModuleInit, INestApplication } from '@nestjs/common';
-import { registerEnumType } from '@nestjs/graphql';
-import { PrismaClient, Role, Status } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class AppService extends PrismaClient implements OnModuleInit {
+export class GraphService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
   }
