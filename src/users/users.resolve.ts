@@ -13,6 +13,7 @@ import { Example } from './users.interceptor';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [UserModel], { nullable: 'items' })
   async allUsers() {
     return this.usersService.findAll();
@@ -25,7 +26,7 @@ export class UsersResolver {
     return this.usersService.findOne(id);
   }
 
-  @Query(() => UserModel, { nullable: true })
+  @Mutation(() => UserModel, { nullable: true })
   async signUp(@Args('user') user: UserCreateInput) {
     return this.usersService.create(user);
   }

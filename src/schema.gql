@@ -87,9 +87,16 @@ type LoggedUserOutput {
 type Query {
   allUsers: [user]!
   user(id: Int!): user
-  signUp(user: UserCreateInput!): user
   teams: [team!]!
   team(id: Float!): team
+}
+
+type Mutation {
+  signUp(user: UserCreateInput!): user
+  signIn(user: LoginInput!): LoggedUserOutput
+  createTeam(name: String!): team!
+  inviteUserToTeam(userEmail: String!, teamId: Float): team!
+  increaseTeamBalance(teamId: Int!, money: Int!): team!
 }
 
 input UserCreateInput {
@@ -99,17 +106,7 @@ input UserCreateInput {
   blockchainAddress: String!
 }
 
-type Mutation {
-  signIn(user: LoginInput!): LoggedUserOutput
-  createTeam(teamCreateInput: TeamCreateInput!): team!
-}
-
 input LoginInput {
   email: String!
   password: String!
-}
-
-input TeamCreateInput {
-  name: String!
-  balance: Float
 }
