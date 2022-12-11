@@ -30,7 +30,7 @@ type nft {
   image: String!
   price: String!
   status: Status!
-  role: team!
+  team: team!
   transactions: [transactions]!
   collection: collection
   userRating: [userRating]!
@@ -45,10 +45,10 @@ enum Status {
 type collection {
   id: Int!
   name: String!
-  email: String
+  logo: String!
   status: Status!
-  timeAutoArchive: Timestamp!
-  nfts: [nft]!
+  timeAutoArchive: Timestamp
+  NFTs: [nft]!
   creatorTeam: team!
 }
 
@@ -89,6 +89,11 @@ type Query {
   user(id: Int!): user
   teams: [team!]!
   team(id: Float!): team
+  collections: [collection]!
+  collection(id: Float!): collection
+  nfts: [nft]!
+  nft(id: Float!): nft
+  myRatings: [userRating]!
 }
 
 type Mutation {
@@ -106,7 +111,63 @@ input UserCreateInput {
   blockchainAddress: String!
 }
 
+type Mutation {
+  signIn(user: LoginInput!): LoggedUserOutput
+  createTeam(teamCreateInput: TeamCreateInput!): team!
+  createCollection(collection: CreateCollectionInput!): collection!
+  updateCollection(collection: UpdateCollectionInput!): collection!
+  createNFT(nft: CreateNFTInput!): nft!
+  updateNFT(nft: UpdateNFTInput!): nft!
+  buyNFT(id: Float!): nft!
+  rateNFT(rating: RateNFTInput!): userRating!
+}
+
 input LoginInput {
   email: String!
   password: String!
+}
+
+input TeamCreateInput {
+  name: String!
+  balance: Float
+}
+
+input CreateCollectionInput {
+  name: String!
+  logo: String
+  timeAutoArchiving: Timestamp
+  NFTs: [nftInput]!
+}
+
+input nftInput {
+  name: String!
+  image: String!
+  price: String!
+}
+
+input UpdateCollectionInput {
+  collectionId: Int!
+  name: String
+  logo: String
+  timeAutoArchiving: Timestamp
+  status: Status
+}
+
+input CreateNFTInput {
+  name: String!
+  image: String!
+  price: Float!
+  collectionId: Int
+  status: Status
+}
+
+input UpdateNFTInput {
+  id: Int!
+  status: Status
+  price: Float
+}
+
+input RateNFTInput {
+  nftId: Int!
+  rate: Int!
 }
