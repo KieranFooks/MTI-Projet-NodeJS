@@ -1,6 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GraphService } from 'src/common/graph/graph.service';
-import { TeamCreateInput } from './dto/team-create.input';
 
 @Injectable()
 export class TeamsService {
@@ -23,24 +27,59 @@ export class TeamsService {
     });
   }
 
-  async create(teamCreateInput: TeamCreateInput) {
+  async create(name: string, userId: number) {
     const newTeam = await this.graphService.team.create({
-      data: teamCreateInput,
+      data: {
+        name,
+        users: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
     });
 
+    return newTeam;
+  }
+
+  async inviteUserToTeam(email: string, teamId: number, isAdmin: boolean) {
+    const user = await this.graphService.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (!isAdmin && user.teamId) {
+      throw new ConflictException('User already has a team');
+    }
+
     await this.graphService.user.update({
-      where: { id: 1 },
+      where: { id: user.id },
       data: {
         team: {
           connect: {
-            id: newTeam.id,
+            id: teamId,
           },
         },
       },
     });
 
     return this.graphService.team.findUnique({
-      where: { id: newTeam.id },
+      where: { id: teamId },
     });
+  }
+
+  async increaseTeamBalance(teamId: number, money: number) {
+    try {
+      return await this.graphService.team.update({
+        where: { id: teamId },
+        data: {
+          balance: { increment: money },
+        },
+      });
+    } catch (e) {
+      throw new NotFoundException('Team not found');
+    }
   }
 }

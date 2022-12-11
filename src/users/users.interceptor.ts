@@ -14,12 +14,31 @@ export class Example implements NestInterceptor {
     const ctx = GqlExecutionContext.create(context);
     const { req } = ctx.getContext();
 
-    if (req.user.role == Role.USER || req.user.role == Role.ADMIN) {
+    if (
+      req.user.payload.role == Role.USER ||
+      req.user.payload.role == Role.ADMIN
+    ) {
       return next.handle();
     }
 
     throw new UnauthorizedException(
       'You are not allowed to access this resource',
+    );
+  }
+}
+
+@Injectable()
+export class VerifyIfAdim implements NestInterceptor {
+  async intercept(context: ExecutionContext, next: CallHandler) {
+    const ctx = GqlExecutionContext.create(context);
+    const { req } = ctx.getContext();
+
+    if (req.user.payload.role === Role.ADMIN) {
+      return next.handle();
+    }
+
+    throw new UnauthorizedException(
+      'You need to be an admin to access this resource',
     );
   }
 }
