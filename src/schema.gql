@@ -87,6 +87,7 @@ type LoggedUserOutput {
 type Query {
   allUsers: [user]!
   user(id: Int!): user
+  signUp(user: UserCreateInput!): user
   teams: [team!]!
   team(id: Float!): team
   collections: [collection]!
@@ -94,14 +95,6 @@ type Query {
   nfts: [nft]!
   nft(id: Float!): nft
   myRatings: [userRating]!
-}
-
-type Mutation {
-  signUp(user: UserCreateInput!): user
-  signIn(user: LoginInput!): LoggedUserOutput
-  createTeam(name: String!): team!
-  inviteUserToTeam(userEmail: String!, teamId: Float): team!
-  increaseTeamBalance(teamId: Int!, money: Int!): team!
 }
 
 input UserCreateInput {
