@@ -4,18 +4,10 @@
 
 type userRating {
   id: Int!
-  name: String!
-  logo: String!
-  status: Status!
-  timeAutoArchive: Timestamp
-  NFTs: [nft]!
-  creatorTeam: team!
-}
-
-enum Status {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
+  nft: nft!
+  user: user!
+  rate: Int!
+  timestamp: Timestamp!
 }
 
 """
@@ -53,10 +45,10 @@ enum Status {
 type collection {
   id: Int!
   name: String!
-  email: String
+  logo: String!
   status: Status!
-  timeAutoArchive: Timestamp!
-  nfts: [nft]!
+  timeAutoArchive: Timestamp
+  NFTs: [nft]!
   creatorTeam: team!
 }
 
@@ -88,37 +80,21 @@ enum Role {
 }
 
 type LoggedUserOutput {
-  """
-  Generated access_token of the user
-  """
+  """Generated access_token of the user"""
   access_token: String!
 }
 
 type Query {
   allUsers: [user]!
-  user(userUniqueInput: UserUniqueInput!): user
+  user(id: Int!): user
+  signUp(user: UserCreateInput!): user
+  teams: [team!]!
+  team(id: Float!): team
   collections: [collection]!
   collection(id: Float!): collection
   nfts: [nft]!
   nft(id: Float!): nft
-  teams: [team!]!
-  team(id: Float!): team
   myRatings: [userRating]!
-}
-
-input UserUniqueInput {
-  id: Int
-}
-
-type Mutation {
-  signupUser(user: UserCreateInput!): user!
-  createCollection(collection: CreateCollectionInput!): collection!
-  updateCollection(collection: UpdateCollectionInput!): collection!
-  createNFT(nft: CreateNFTInput!): nft!
-  updateNFT(nft: UpdateNFTInput!): nft!
-  buyNFT(id: Float!): nft!
-  createTeam(teamCreateInput: TeamCreateInput!): team!
-  rateNFT(rating: RateNFTInput!): userRating!
 }
 
 input UserCreateInput {
@@ -126,6 +102,27 @@ input UserCreateInput {
   name: String!
   password: String!
   blockchainAddress: String!
+}
+
+type Mutation {
+  signIn(user: LoginInput!): LoggedUserOutput
+  createTeam(teamCreateInput: TeamCreateInput!): team!
+  createCollection(collection: CreateCollectionInput!): collection!
+  updateCollection(collection: UpdateCollectionInput!): collection!
+  createNFT(nft: CreateNFTInput!): nft!
+  updateNFT(nft: UpdateNFTInput!): nft!
+  buyNFT(id: Float!): nft!
+  rateNFT(rating: RateNFTInput!): userRating!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input TeamCreateInput {
+  name: String!
+  balance: Float
 }
 
 input CreateCollectionInput {
@@ -161,11 +158,6 @@ input UpdateNFTInput {
   id: Int!
   status: Status
   price: Float
-}
-
-input TeamCreateInput {
-  name: String!
-  balance: Float
 }
 
 input RateNFTInput {

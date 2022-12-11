@@ -1,61 +1,23 @@
-import 'reflect-metadata';
-import {
-  Resolver,
-  InputType,
-  Field,
-  Query,
-  Int,
-  Args,
-  Mutation,
-  Float,
-} from '@nestjs/graphql';
 import {
   BadRequestException,
   ConflictException,
   Inject,
   NotFoundException,
 } from '@nestjs/common';
-import { AppService } from './app.service';
-import { NFTModel } from './Models/nft';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
-
-@InputType()
-export class CreateNFTInput {
-  @Field(() => String)
-  name: string;
-
-  @Field(() => String)
-  image: string;
-
-  @Field(() => Float)
-  price: number;
-
-  @Field(() => Int, { nullable: true })
-  collectionId: number | null;
-
-  @Field(() => Status, { nullable: true })
-  status: Status | null;
-}
-
-@InputType()
-export class UpdateNFTInput {
-  @Field(() => Int)
-  id: number;
-
-  @Field(() => Status, { nullable: true })
-  status: Status | null;
-
-  @Field(() => Float, { nullable: true })
-  price: number | null;
-}
+import { GraphService } from '../common/graph/graph.service';
+import { NFTModel } from '../Models/nft';
+import { CreateNFTInput } from './dto/createNFT.input';
+import { UpdateNFTInput } from './dto/updateNFT.input';
 
 @Resolver(NFTModel)
-export class NFTResolver {
-  constructor(@Inject(AppService) private appService: AppService) {}
+export class NFTsResolver {
+  constructor(@Inject(GraphService) private graphService: GraphService) {}
 
   @Query(() => [NFTModel], { nullable: 'items' })
   nfts() {
-    return this.appService.nFT.findMany({
+    return this.graphService.nFT.findMany({
       include: {
         collection: true,
         team: true,
@@ -67,7 +29,7 @@ export class NFTResolver {
 
   @Query(() => NFTModel, { nullable: true })
   nft(@Args('id') id: number) {
-    return this.appService.nFT.findMany({
+    return this.graphService.nFT.findMany({
       where: {
         id,
       },
@@ -86,7 +48,7 @@ export class NFTResolver {
       throw new BadRequestException(`Price must be greater than 0`);
     }
 
-    return this.appService.nFT.create({
+    return this.graphService.nFT.create({
       data: {
         name: nft.name,
         image: nft.image,
@@ -106,7 +68,7 @@ export class NFTResolver {
 
   @Mutation(() => NFTModel)
   async updateNFT(@Args('nft') nft: UpdateNFTInput) {
-    const dbNFT = await this.appService.nFT.findUnique({
+    const dbNFT = await this.graphService.nFT.findUnique({
       where: {
         id: nft.id,
       },
@@ -127,7 +89,7 @@ export class NFTResolver {
       throw new BadRequestException(`Status can only be increased`);
     }
 
-    return this.appService.nFT.update({
+    return this.graphService.nFT.update({
       where: {
         id: nft.id,
       },
@@ -145,7 +107,7 @@ export class NFTResolver {
 
   @Mutation(() => NFTModel)
   async buyNFT(@Args('id') id: number) {
-    const nftDb = await this.appService.nFT.findUnique({
+    const nftDb = await this.graphService.nFT.findUnique({
       where: {
         id,
       },
@@ -157,7 +119,7 @@ export class NFTResolver {
       throw new ConflictException(`NFT with id ${id} is not published`);
     }
 
-    const buyerTeamDb = await this.appService.team.findUnique({
+    const buyerTeamDb = await this.graphService.team.findUnique({
       where: {
         id: 1, // FIXME: hardcoded
       },
@@ -166,7 +128,7 @@ export class NFTResolver {
       throw new ConflictException(`Not enough balance`);
     }
 
-    return this.appService.nFT.update({
+    return this.graphService.nFT.update({
       where: {
         id,
       },

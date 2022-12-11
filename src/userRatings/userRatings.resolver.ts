@@ -1,33 +1,16 @@
-import 'reflect-metadata';
-import {
-  Resolver,
-  InputType,
-  Field,
-  Query,
-  Int,
-  Args,
-  Mutation,
-} from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
-import { AppService } from './app.service';
-import { UserRatingModel } from './Models/userRating';
-
-@InputType()
-export class RateNFTInput {
-  @Field(() => Int)
-  nftId: number;
-
-  @Field(() => Int)
-  rate: number;
-}
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GraphService } from '../common/graph/graph.service';
+import { UserRatingModel } from '../Models/userRating';
+import { RateNFTInput } from './dto/rateNFT.input';
 
 @Resolver(UserRatingModel)
-export class UserRatingResolver {
-  constructor(@Inject(AppService) private appService: AppService) {}
+export class UserRatingsResolver {
+  constructor(@Inject(GraphService) private graphService: GraphService) {}
 
   @Query(() => [UserRatingModel], { nullable: 'items' })
   myRatings() {
-    return this.appService.userRating.findMany({
+    return this.graphService.userRating.findMany({
       where: {
         userId: 1, // FIXME: Hardcoded
       },
@@ -40,7 +23,7 @@ export class UserRatingResolver {
 
   @Mutation(() => UserRatingModel)
   rateNFT(@Args('rating') rating: RateNFTInput) {
-    return this.appService.userRating.upsert({
+    return this.graphService.userRating.upsert({
       where: {
         NFTId_userId: {
           NFTId: rating.nftId,
