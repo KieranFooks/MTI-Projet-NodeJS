@@ -9,11 +9,15 @@ import {
   Mutation,
   Float,
 } from '@nestjs/graphql';
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  NotFoundException,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { NFTModel } from './Models/nft';
-import { NFT, Status } from '@prisma/client';
-import { PersistedQueryNotFoundError } from 'apollo-server-errors';
+import { Status } from '@prisma/client';
 
 @InputType()
 export class CreateNFTInput {
@@ -45,15 +49,6 @@ export class UpdateNFTInput {
   price: number | null;
 }
 
-@InputType()
-export class RateNFTInput {
-  @Field(() => Int)
-  nftId: number;
-
-  @Field(() => Int)
-  rate: number;
-}
-
 @Resolver(NFTModel)
 export class NFTResolver {
   constructor(@Inject(AppService) private appService: AppService) {}
@@ -70,7 +65,7 @@ export class NFTResolver {
     });
   }
 
-  @Query(() => [NFTModel], { nullable: 'items' })
+  @Query(() => NFTModel, { nullable: true })
   nft(@Args('id') id: number) {
     return this.appService.nFT.findMany({
       where: {
@@ -97,16 +92,8 @@ export class NFTResolver {
         image: nft.image,
         price: nft.price,
         status: nft.status,
-        team: {
-          connect: {
-            id: 1,
-          },
-        },
-        collection: {
-          connect: {
-            id: nft.collectionId,
-          },
-        },
+        teamId: 1, // FIXME: hardcoded
+        collectionId: nft.collectionId,
       },
       include: {
         collection: true,
@@ -128,12 +115,14 @@ export class NFTResolver {
     if (!dbNFT) {
       throw new NotFoundException(`NFT with id ${nft.id} not found`);
     }
+    // TODO: remove if admin
     if (dbNFT.status === Status.ARCHIVED) {
       throw new BadRequestException(`NFT with id ${nft.id} is archived`);
     }
     if (nft.price !== null && nft.price < 0) {
       throw new BadRequestException(`Price must be greater than 0`);
     }
+    // TODO: remove if admin
     if (nft.status !== null && nft.status < dbNFT.status) {
       throw new BadRequestException(`Status can only be increased`);
     }
@@ -155,24 +144,40 @@ export class NFTResolver {
   }
 
   @Mutation(() => NFTModel)
-  rateNFT(@Args('rating') rating: RateNFTInput) {
-    return this.appService.userRating.create({
+  async buyNFT(@Args('id') id: number) {
+    const nftDb = await this.appService.nFT.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!nftDb) {
+      throw new NotFoundException(`NFT with id ${id} not found`);
+    }
+    if (nftDb.status !== Status.PUBLISHED) {
+      throw new ConflictException(`NFT with id ${id} is not published`);
+    }
+
+    const buyerTeamDb = await this.appService.team.findUnique({
+      where: {
+        id: 1, // FIXME: hardcoded
+      },
+    });
+    if (buyerTeamDb.balance < nftDb.price) {
+      throw new ConflictException(`Not enough balance`);
+    }
+
+    return this.appService.nFT.update({
+      where: {
+        id,
+      },
       data: {
-        rate: rating.rate,
-        nft: {
-          connect: {
-            id: rating.nftId,
-          },
-        },
-        user: {
-          connect: {
-            id: 1,
-          },
-        },
+        teamId: 1, // FIXME: hardcoded
       },
       include: {
-        nft: true,
-        user: true,
+        collection: true,
+        team: true,
+        transactions: true,
+        userRating: true,
       },
     });
   }

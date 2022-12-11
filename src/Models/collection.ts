@@ -12,17 +12,17 @@ export class CollectionModel {
   @Field(() => String)
   name: string;
 
-  @Field(() => String, { nullable: true })
-  email?: string | null;
+  @Field(() => String)
+  logo: string;
 
   @Field(() => Status)
   status: Status;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   timeAutoArchive: Date | null;
 
   @Field(() => [NFTModel], { nullable: 'items' })
-  nfts: NFTModel[];
+  NFTs: NFTModel[];
 
   @Field(() => TeamModel)
   creatorTeam: TeamModel;

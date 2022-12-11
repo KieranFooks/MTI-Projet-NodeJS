@@ -1,5 +1,11 @@
 import 'reflect-metadata';
-import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  Int,
+  registerEnumType,
+  InputType,
+} from '@nestjs/graphql';
 import { Status } from '@prisma/client';
 import { TeamModel } from './team';
 import { CollectionModel } from './collection';
@@ -24,7 +30,7 @@ export class NFTModel {
   status: Status;
 
   @Field(() => TeamModel)
-  role: TeamModel;
+  team: TeamModel;
 
   @Field(() => [TransactionsModel], { nullable: 'items' })
   transactions: TransactionsModel[];
@@ -34,6 +40,18 @@ export class NFTModel {
 
   @Field(() => [UserRatingModel], { nullable: 'items' })
   userRating: UserRatingModel[];
+}
+
+@InputType('nftInput')
+export class NFTInput {
+  @Field()
+  name: string;
+
+  @Field(() => String)
+  image: string;
+
+  @Field(() => String)
+  price: number;
 }
 
 registerEnumType(Status, {

@@ -4,10 +4,18 @@
 
 type userRating {
   id: Int!
-  nft: nft!
-  user: user!
-  rate: Int!
-  timestamp: Timestamp!
+  name: String!
+  logo: String!
+  status: Status!
+  timeAutoArchive: Timestamp
+  NFTs: [nft]!
+  creatorTeam: team!
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
 """
@@ -30,7 +38,7 @@ type nft {
   image: String!
   price: String!
   status: Status!
-  role: team!
+  team: team!
   transactions: [transactions]!
   collection: collection
   userRating: [userRating]!
@@ -80,16 +88,37 @@ enum Role {
 }
 
 type LoggedUserOutput {
-  """Generated access_token of the user"""
+  """
+  Generated access_token of the user
+  """
   access_token: String!
 }
 
 type Query {
   allUsers: [user]!
-  user(id: Int!): user
-  signUp(user: UserCreateInput!): user
+  user(userUniqueInput: UserUniqueInput!): user
+  collections: [collection]!
+  collection(id: Float!): collection
+  nfts: [nft]!
+  nft(id: Float!): nft
   teams: [team!]!
   team(id: Float!): team
+  myRatings: [userRating]!
+}
+
+input UserUniqueInput {
+  id: Int
+}
+
+type Mutation {
+  signupUser(user: UserCreateInput!): user!
+  createCollection(collection: CreateCollectionInput!): collection!
+  updateCollection(collection: UpdateCollectionInput!): collection!
+  createNFT(nft: CreateNFTInput!): nft!
+  updateNFT(nft: UpdateNFTInput!): nft!
+  buyNFT(id: Float!): nft!
+  createTeam(teamCreateInput: TeamCreateInput!): team!
+  rateNFT(rating: RateNFTInput!): userRating!
 }
 
 input UserCreateInput {
@@ -99,17 +128,47 @@ input UserCreateInput {
   blockchainAddress: String!
 }
 
-type Mutation {
-  signIn(user: LoginInput!): LoggedUserOutput
-  createTeam(teamCreateInput: TeamCreateInput!): team!
+input CreateCollectionInput {
+  name: String!
+  logo: String
+  timeAutoArchiving: Timestamp
+  NFTs: [nftInput]!
 }
 
-input LoginInput {
-  email: String!
-  password: String!
+input nftInput {
+  name: String!
+  image: String!
+  price: String!
+}
+
+input UpdateCollectionInput {
+  collectionId: Int!
+  name: String
+  logo: String
+  timeAutoArchiving: Timestamp
+  status: Status
+}
+
+input CreateNFTInput {
+  name: String!
+  image: String!
+  price: Float!
+  collectionId: Int
+  status: Status
+}
+
+input UpdateNFTInput {
+  id: Int!
+  status: Status
+  price: Float
 }
 
 input TeamCreateInput {
   name: String!
   balance: Float
+}
+
+input RateNFTInput {
+  nftId: Int!
+  rate: Int!
 }

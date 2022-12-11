@@ -89,4 +89,6 @@ model UserRating {
   timestamp DateTime @default(now())
   NFTId     Int
   userId    Int
+
+  @@unique([NFTId, userId])
 }

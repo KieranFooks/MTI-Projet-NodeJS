@@ -8,10 +8,11 @@ import {
   Args,
   Mutation,
 } from '@nestjs/graphql';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CollectionModel } from './Models/collection';
-import { NFTModel } from './Models/nft';
+import { NFTInput, NFTModel } from './Models/nft';
+import { Status } from '@prisma/client';
 
 @InputType()
 export class CreateCollectionInput {
@@ -19,13 +20,31 @@ export class CreateCollectionInput {
   name: string;
 
   @Field(() => String, { nullable: true })
-  logo: string;
+  logo: string | null;
 
   @Field(() => Date, { nullable: true })
-  timeAutoArchiving: Date;
+  timeAutoArchiving: Date | null;
 
-  @Field(() => [NFTModel], { nullable: true })
-  NFTs: NFTModel[];
+  @Field(() => [NFTInput], { nullable: 'items' })
+  NFTs: NFTInput[];
+}
+
+@InputType()
+export class UpdateCollectionInput {
+  @Field(() => Int)
+  collectionId: number;
+
+  @Field(() => String, { nullable: true })
+  name: string | null;
+
+  @Field(() => String, { nullable: true })
+  logo: string | null;
+
+  @Field(() => Date, { nullable: true })
+  timeAutoArchiving: Date | null;
+
+  @Field(() => Status, { nullable: true })
+  status: Status | null;
 }
 
 @Resolver(CollectionModel)
@@ -42,9 +61,9 @@ export class CollectionResolver {
     });
   }
 
-  @Query(() => [CollectionModel], { nullable: 'items' })
-  collection(@Args('id') id: number) {
-    return this.appService.collection.findMany({
+  @Query(() => CollectionModel, { nullable: true })
+  async collection(@Args('id') id: number) {
+    return this.appService.collection.findUnique({
       where: {
         id,
       },
@@ -62,12 +81,38 @@ export class CollectionResolver {
         name: collection.name,
         logo: collection.logo,
         timeAutoArchiving: collection.timeAutoArchiving,
-        creatorTeamId: 1,
+        creatorTeamId: 1, // FIXME: Hardcoded
         NFTs: {
           createMany: {
-            data: collection.NFTs.map((nft) => ({ ...nft, teamId: 1 })),
+            data: collection.NFTs.map((nft) => ({ ...nft, teamId: 1 })), // FIXME: Hardcoded
           },
         },
+      },
+    });
+  }
+
+  @Mutation(() => CollectionModel)
+  async updateCollection(
+    @Args('collection') collection: UpdateCollectionInput,
+  ) {
+    const collectionDb = await this.appService.collection.findUnique({
+      where: {
+        id: collection.collectionId,
+      },
+    });
+    if (!collectionDb) {
+      throw new NotFoundException('Collection not found');
+    }
+
+    return this.appService.collection.update({
+      where: {
+        id: collection.collectionId,
+      },
+      data: {
+        name: collection.name,
+        logo: collection.logo,
+        timeAutoArchiving: collection.timeAutoArchiving,
+        status: collection.status,
       },
     });
   }
