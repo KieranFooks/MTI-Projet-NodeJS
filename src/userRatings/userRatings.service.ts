@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { GraphService } from 'src/common/graph/graph.service';
-import { RateNFTInput } from './dto/rateNFT.input';
+import { RateNftInput } from './dto/rateNFT.input';
 
 @Injectable()
 export class UserRatingsService {
@@ -18,20 +18,20 @@ export class UserRatingsService {
     });
   }
 
-  create(rating: RateNFTInput) {
+  create(rating: RateNftInput, userId: number) {
     return this.graphService.userRating.upsert({
       where: {
-        NFTId_userId: {
-          NFTId: rating.nftId,
-          userId: 1, // FIXME: Hardcoded
+        nftId_userId: {
+          nftId: rating.nftId,
+          userId: userId,
         },
       },
       update: {
         rate: rating.rate,
       },
       create: {
-        NFTId: rating.nftId,
-        userId: 1, // FIXME: Hardcoded
+        nftId: rating.nftId,
+        userId: userId,
         rate: rating.rate,
       },
       include: {

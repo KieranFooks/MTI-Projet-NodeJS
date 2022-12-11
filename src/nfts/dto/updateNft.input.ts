@@ -2,7 +2,7 @@ import { Field, Float, InputType, Int } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
 
 @InputType()
-export class UpdateNFTInput {
+export class UpdateNftInput {
   @Field(() => Int)
   id: number;
 

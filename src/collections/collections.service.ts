@@ -11,7 +11,7 @@ export class CollectionsService {
     return this.graphService.collection.findMany({
       include: {
         creatorTeam: true,
-        NFTs: true,
+        nfts: true,
       },
     });
   }
@@ -21,7 +21,7 @@ export class CollectionsService {
       where: { id },
       include: {
         creatorTeam: true,
-        NFTs: true,
+        nfts: true,
       },
     });
   }
@@ -33,9 +33,9 @@ export class CollectionsService {
         logo: collectionCreateInput.logo,
         timeAutoArchiving: collectionCreateInput.timeAutoArchiving,
         creatorTeamId: 1, // FIXME: Hardcoded
-        NFTs: {
+        nfts: {
           createMany: {
-            data: collectionCreateInput.NFTs.map((nft) => ({
+            data: collectionCreateInput.Nfts.map((nft) => ({
               ...nft,
               teamId: 1,
             })), // FIXME: Hardcoded

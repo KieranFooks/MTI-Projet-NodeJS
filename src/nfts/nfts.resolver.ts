@@ -1,36 +1,41 @@
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { NFTModel } from '../Models/nft';
-import { CreateNFTInput } from './dto/createNFT.input';
-import { UpdateNFTInput } from './dto/updateNFT.input';
-import { NFTsService } from './nfts.service';
+import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
+import { CurrentUser, JWTUser } from 'src/users/users.decorator';
+import { NftModel } from '../Models/nft';
+import { CreateNftInput } from './dto/createNft.input';
+import { UpdateNftInput } from './dto/updateNft.input';
+import { NftsService } from './nfts.service';
 
-@Resolver(NFTModel)
-export class NFTsResolver {
-  constructor(@Inject(NFTsService) private nsftService: NFTsService) {}
+@Resolver(NftModel)
+export class NftsResolver {
+  constructor(@Inject(NftsService) private nftsService: NftsService) {}
 
-  @Query(() => [NFTModel], { nullable: 'items' })
-  nfts() {
-    return this.nsftService.fintAll();
+  @Query(() => [NftModel], { nullable: 'items' })
+  nfts(@CurrentUser() user: JWTUser) {
+    return this.nftsService.fintAll(user);
   }
 
-  @Query(() => NFTModel, { nullable: true })
-  nft(@Args('id') id: number) {
-    return this.nsftService.findOne(id);
+  @Query(() => NftModel, { nullable: true })
+  nft(@Args('id') id: number, @CurrentUser() user: JWTUser) {
+    return this.nftsService.findOne(id, user);
   }
 
-  @Mutation(() => NFTModel)
-  createNFT(@Args('nft') nft: CreateNFTInput) {
-    return this.nsftService.create(nft);
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => NftModel)
+  createNft(@Args('nft') nft: CreateNftInput, @CurrentUser() user: JWTUser) {
+    return this.nftsService.create(nft, user);
   }
 
-  @Mutation(() => NFTModel)
-  updateNFT(@Args('nft') nft: UpdateNFTInput) {
-    return this.nsftService.update(nft);
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => NftModel)
+  updateNft(@Args('nft') nft: UpdateNftInput, @CurrentUser() user: JWTUser) {
+    return this.nftsService.update(nft, user);
   }
 
-  @Mutation(() => NFTModel)
-  buyNFT(@Args('id') id: number) {
-    return this.nsftService.buyNFT(id);
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => NftModel)
+  buyNft(@Args('id') id: number, @CurrentUser() user: JWTUser) {
+    return this.nftsService.buyNft(id, user);
   }
 }

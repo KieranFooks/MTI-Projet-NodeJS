@@ -1,8 +1,8 @@
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import 'reflect-metadata';
-import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { UserModel } from './user';
 import { CollectionModel } from './collection';
-import { NFTModel } from './nft';
+import { NftModel } from './nft';
+import { UserModel } from './user';
 
 @ObjectType('team')
 export class TeamModel {
@@ -21,6 +21,6 @@ export class TeamModel {
   @Field(() => [CollectionModel], { nullable: 'items' })
   createdCollection: CollectionModel[];
 
-  @Field(() => [NFTModel], { nullable: 'items' })
-  ownedNFT: NFTModel[];
+  @Field(() => [NftModel], { nullable: 'items' })
+  ownedNft: NftModel[];
 }

@@ -1,19 +1,19 @@
-import 'reflect-metadata';
 import {
-  ObjectType,
   Field,
-  Int,
-  registerEnumType,
   InputType,
+  Int,
+  ObjectType,
+  registerEnumType,
 } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
-import { TeamModel } from './team';
+import 'reflect-metadata';
 import { CollectionModel } from './collection';
-import { UserRatingModel } from './userRating';
+import { TeamModel } from './team';
 import { TransactionsModel } from './transactions';
+import { UserRatingModel } from './userRating';
 
 @ObjectType('nft')
-export class NFTModel {
+export class NftModel {
   @Field(() => Int)
   id: number;
 
@@ -35,15 +35,15 @@ export class NFTModel {
   @Field(() => [TransactionsModel], { nullable: 'items' })
   transactions: TransactionsModel[];
 
-  @Field(() => CollectionModel, { nullable: true })
-  collection: CollectionModel | null;
+  @Field(() => CollectionModel)
+  collection: CollectionModel;
 
   @Field(() => [UserRatingModel], { nullable: 'items' })
   userRating: UserRatingModel[];
 }
 
 @InputType('nftInput')
-export class NFTInput {
+export class NftInput {
   @Field()
   name: string;
 
@@ -52,6 +52,9 @@ export class NFTInput {
 
   @Field(() => String)
   price: number;
+
+  @Field(() => Int)
+  collectionId: number;
 }
 
 registerEnumType(Status, {

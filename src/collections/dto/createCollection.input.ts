@@ -1,5 +1,5 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { NFTInput } from 'src/Models/nft';
+import { Field, InputType } from '@nestjs/graphql';
+import { NftInput } from 'src/Models/nft';
 
 @InputType()
 export class CreateCollectionInput {
@@ -12,6 +12,6 @@ export class CreateCollectionInput {
   @Field(() => Date, { nullable: true })
   timeAutoArchiving: Date | null;
 
-  @Field(() => [NFTInput], { nullable: 'items' })
-  NFTs: NFTInput[];
+  @Field(() => [NftInput], { nullable: 'items' })
+  Nfts: NftInput[];
 }

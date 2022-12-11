@@ -1,6 +1,6 @@
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import 'reflect-metadata';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { NFTModel } from './nft';
+import { NftModel } from './nft';
 import { UserModel } from './user';
 
 @ObjectType('userRating')
@@ -8,8 +8,8 @@ export class UserRatingModel {
   @Field(() => Int)
   id: number;
 
-  @Field(() => NFTModel)
-  nft: NFTModel;
+  @Field(() => NftModel)
+  nft: NftModel;
 
   @Field(() => UserModel)
   user: UserModel;

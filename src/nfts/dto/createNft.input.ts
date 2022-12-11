@@ -2,7 +2,7 @@ import { Field, Float, InputType, Int } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
 
 @InputType()
-export class CreateNFTInput {
+export class CreateNftInput {
   @Field(() => String)
   name: string;
 
@@ -12,8 +12,8 @@ export class CreateNFTInput {
   @Field(() => Float)
   price: number;
 
-  @Field(() => Int, { nullable: true })
-  collectionId: number | null;
+  @Field(() => Int)
+  collectionId: number;
 
   @Field(() => Status, { nullable: true })
   status: Status | null;

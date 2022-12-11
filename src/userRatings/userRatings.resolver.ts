@@ -1,7 +1,8 @@
 import { Inject } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CurrentUser, JWTUser } from 'src/users/users.decorator';
 import { UserRatingModel } from '../Models/userRating';
-import { RateNFTInput } from './dto/rateNFT.input';
+import { RateNftInput } from './dto/rateNFT.input';
 import { UserRatingsService } from './userRatings.service';
 
 @Resolver(UserRatingModel)
@@ -11,12 +12,12 @@ export class UserRatingsResolver {
   ) {}
 
   @Query(() => [UserRatingModel], { nullable: 'items' })
-  myRatings() {
-    return this.userRatingsService.findByUserId(1); // FIXME: Hardcoded
+  myRatings(@CurrentUser() user: JWTUser) {
+    return this.userRatingsService.findByUserId(user.userId);
   }
 
   @Mutation(() => UserRatingModel)
-  rateNFT(@Args('rating') rating: RateNFTInput) {
-    return this.userRatingsService.create(rating);
+  rateNft(@Args('rating') rating: RateNftInput, @CurrentUser() user: JWTUser) {
+    return this.userRatingsService.create(rating, user.userId);
   }
 }

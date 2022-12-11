@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
+import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
-import { NFTModel } from './nft';
+import 'reflect-metadata';
+import { NftModel } from './nft';
 import { TeamModel } from './team';
 
 @ObjectType('collection')
@@ -21,8 +21,8 @@ export class CollectionModel {
   @Field(() => Date, { nullable: true })
   timeAutoArchive: Date | null;
 
-  @Field(() => [NFTModel], { nullable: 'items' })
-  NFTs: NFTModel[];
+  @Field(() => [NftModel], { nullable: 'items' })
+  Nfts: NftModel[];
 
   @Field(() => TeamModel)
   creatorTeam: TeamModel;

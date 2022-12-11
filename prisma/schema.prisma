@@ -22,52 +22,56 @@ enum Status {
 }
 
 model User {
-  id                Int            @id @default(autoincrement())
-  email             String         @unique
+  id                Int    @id @default(autoincrement())
+  email             String @unique
   name              String
   password          String
   blockchainAddress String
-  role              Role           @default(USER)
-  team              Team?          @relation(fields: [teamId], references: [id])
+  role              Role   @default(USER)
   teamId            Int?
-  buyTransactions   Transactions[] @relation("Buyer")
-  sellTransactions  Transactions[] @relation("Seller")
-  userRating        UserRating[]
+
+  team            Team?          @relation(fields: [teamId], references: [id])
+  buyTransactions Transactions[]
+  userRating      UserRating[]
 }
 
 model Team {
-  id                Int          @id @default(autoincrement())
-  name              String
-  balance           Float        @default(0)
+  id      Int    @id @default(autoincrement())
+  name    String
+  balance Float  @default(0)
+
   users             User[]
   createdCollection Collection[]
-  ownedNFT          NFT[]
+  ownedNft          Nft[]
+  transactions      Transactions[]
 }
 
-model NFT {
-  id           Int            @id @default(autoincrement())
+model Nft {
+  id           Int    @id @default(autoincrement())
   name         String
   image        String
   price        Float
-  status       Status         @default(DRAFT)
-  team         Team           @relation(fields: [teamId], references: [id])
-  transactions Transactions[]
-  collection   Collection?    @relation(fields: [collectionId], references: [id])
-  collectionId Int?
+  status       Status @default(DRAFT)
+  collectionId Int
   teamId       Int
+
+  team         Team           @relation(fields: [teamId], references: [id])
+  collection   Collection     @relation(fields: [collectionId], references: [id])
+  transactions Transactions[]
   userRating   UserRating[]
 }
 
 model Transactions {
-  id        Int      @id @default(autoincrement())
-  nft       NFT      @relation(fields: [NFTId], references: [id])
-  seller    User     @relation(fields: [sellerId], references: [id], "Seller")
-  buyer     User     @relation(fields: [buyerId], references: [id], "Buyer")
-  amount    Float
-  timestamp DateTime @default(now())
-  NFTId     Int
-  sellerId  Int
-  buyerId   Int
+  id           Int      @id @default(autoincrement())
+  amount       Float
+  timestamp    DateTime @default(now())
+  nftId        Int
+  sellerTeamId Int
+  buyerId      Int
+
+  buyer      User @relation(fields: [buyerId], references: [id])
+  nft        Nft  @relation(fields: [nftId], references: [id])
+  sellerTeam Team @relation(fields: [sellerTeamId], references: [id])
 }
 
 model Collection {
@@ -76,19 +80,21 @@ model Collection {
   logo              String?
   status            Status    @default(DRAFT)
   timeAutoArchiving DateTime?
-  NFTs              NFT[]
-  creatorTeam       Team      @relation(fields: [creatorTeamId], references: [id])
   creatorTeamId     Int
+
+  creatorTeam Team  @relation(fields: [creatorTeamId], references: [id])
+  nfts        Nft[]
 }
 
 model UserRating {
   id        Int      @id @default(autoincrement())
-  nft       NFT      @relation(fields: [NFTId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
   rate      Int
   timestamp DateTime @default(now())
-  NFTId     Int
+  nftId     Int
   userId    Int
 
-  @@unique([NFTId, userId])
+  nft  Nft  @relation(fields: [nftId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([nftId, userId])
 }
