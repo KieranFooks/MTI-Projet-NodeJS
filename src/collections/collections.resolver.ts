@@ -1,5 +1,5 @@
 import { Inject, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../common/auth/optional-jwt-auth.guard';
 import { CurrentUser, JWTUser } from '../users/users.decorator';
@@ -8,6 +8,7 @@ import { CollectionsService } from './collections.service';
 import { CreateCollectionInput } from './dto/createCollection.input';
 import { UpdateCollectionInput } from './dto/updateCollection.input';
 import { PaginationInput } from '../users/dto/pagination.input';
+import { BestSellersCollectionOutput } from './dto/best-sellers-collection.output';
 
 @Resolver(CollectionModel)
 export class CollectionsResolver {
@@ -47,5 +48,13 @@ export class CollectionsResolver {
     @CurrentUser() user: JWTUser,
   ) {
     return this.collectionsService.update(collection, user);
+  }
+
+  @Query(() => [BestSellersCollectionOutput], { nullable: 'items' })
+  bestSellerCollections(
+    @Args('top', { type: () => Int })
+    top: number,
+  ) {
+    return this.collectionsService.bestSellerCollections(top);
   }
 }

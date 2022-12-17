@@ -235,4 +235,31 @@ export class CollectionsService {
       },
     });
   }
+
+  async bestSellerCollections(top: number) {
+    const collections = await this.graphService.collection.findMany({
+      include: {
+        nfts: {
+          include: {
+            transactions: true,
+          },
+        },
+        creatorTeam: true,
+      },
+    });
+
+    const colletionsWithTotalTransactions = collections.map((collection) => {
+      const amount = collection.nfts.reduce(
+        (acc, curr) =>
+          acc +
+          curr.transactions.reduce((acc2, curr2) => acc2 + curr2.amount, 0),
+        0,
+      );
+      return { ...collection, amount };
+    });
+
+    return colletionsWithTotalTransactions
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, top);
+  }
 }

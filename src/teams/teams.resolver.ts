@@ -8,6 +8,7 @@ import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { Role } from '@prisma/client';
 import { VerifyIfAdim } from '../users/users.interceptor';
 import { PaginationInput } from '../users/dto/pagination.input';
+import { BestSellersTeamOutput } from './dto/best-sellers-team.output';
 
 @Resolver(TeamModel)
 export class TeamsResolver {
@@ -62,11 +63,11 @@ export class TeamsResolver {
     return await this.teamsService.increaseTeamBalance(teamId, money);
   }
 
-  @Query(() => [TeamModel])
-  async bestSellers(
-    @Args('pagination', { nullable: true, type: () => PaginationInput })
-    pagination: PaginationInput | null,
+  @Query(() => [BestSellersTeamOutput])
+  async bestSellersTeam(
+    @Args('top', { type: () => Int })
+    top: number,
   ) {
-    return await this.teamsService.bestSellers(pagination);
+    return await this.teamsService.bestSellers(top);
   }
 }

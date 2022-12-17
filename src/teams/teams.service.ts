@@ -131,8 +131,7 @@ export class TeamsService {
     }
   }
 
-  async bestSellers(pagination: PaginationInput | null) {
-    //return teams with the sum of the amount of transactions
+  async bestSellers(top: number) {
     const teams = await this.graphService.team.findMany({
       include: {
         transactions: {
@@ -144,20 +143,18 @@ export class TeamsService {
         ownedNft: true,
         createdCollection: true,
       },
-      take: pagination?.limit,
-      skip: pagination?.offset,
     });
 
     const teamsWithTotalTransactions = teams.map((team) => {
-      const totalTransactions = team.transactions.reduce(
+      const amount = team.transactions.reduce(
         (acc, curr) => acc + curr.amount,
         0,
       );
-      return { ...team, totalTransactions };
+      return { ...team, amount };
     });
 
-    return teamsWithTotalTransactions.sort(
-      (a, b) => b.totalTransactions - a.totalTransactions,
-    );
+    return teamsWithTotalTransactions
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, top);
   }
 }

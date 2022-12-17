@@ -35,6 +35,7 @@ import {
 import {
   BESTSELLERS_TEAMS_QUERY,
   BESTSLLERS_TEAMS_OPERATION_NAME,
+  generateBestSellersVariables,
 } from './helpers/teams/bestsellers.teams.helper';
 
 const GRAPHQL_ENDPOINT = '/graphql';
@@ -218,14 +219,18 @@ describe('Teams resolver (e2e)', () => {
       .send({
         operationName: BESTSLLERS_TEAMS_OPERATION_NAME,
         query: BESTSELLERS_TEAMS_QUERY,
+        variables: generateBestSellersVariables(10),
       })
       .expect((res) => {
         const { body } = res;
-        expect(body.data.bestSellers).toBeDefined();
-        expect(body.data.bestSellers.length).toEqual(3);
-        expect(body.data.bestSellers[0].id).toEqual(team2.id);
-        expect(body.data.bestSellers[1].id).toEqual(team1.id);
-        expect(body.data.bestSellers[2].id).toEqual(team.id);
+        expect(body.data.bestSellersTeam).toBeDefined();
+        expect(body.data.bestSellersTeam.length).toEqual(3);
+        expect(body.data.bestSellersTeam[1].amount).toBeLessThan(
+          body.data.bestSellersTeam[0].amount,
+        );
+        expect(body.data.bestSellersTeam[2].amount).toBeLessThan(
+          body.data.bestSellersTeam[1].amount,
+        );
       });
   });
 });
