@@ -12,7 +12,7 @@ export class TransactionsModel {
   nft: NftModel;
 
   @Field(() => UserModel)
-  seller: UserModel;
+  sellerTeam: UserModel;
 
   @Field(() => UserModel)
   buyer: UserModel;

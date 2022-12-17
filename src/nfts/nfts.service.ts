@@ -324,6 +324,9 @@ export class NftsService {
             rate: true,
           },
         },
+        collection: true,
+        team: true,
+        transactions: true,
       },
     });
 

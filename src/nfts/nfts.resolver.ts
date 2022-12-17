@@ -48,7 +48,7 @@ export class NftsResolver {
     return this.nftsService.buyNft(id, user);
   }
 
-  @Query(() => [MostRatedNftOutput])
+  @Query(() => [MostRatedNftOutput], { nullable: 'items' })
   mostRatedNfts(
     @Args('top', { type: () => Int })
     top: number,

@@ -63,7 +63,7 @@ export class TeamsResolver {
     return await this.teamsService.increaseTeamBalance(teamId, money);
   }
 
-  @Query(() => [BestSellersTeamOutput])
+  @Query(() => [BestSellersTeamOutput], { nullable: 'items' })
   async bestSellersTeam(
     @Args('top', { type: () => Int })
     top: number,
