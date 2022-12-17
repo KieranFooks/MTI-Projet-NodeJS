@@ -106,7 +106,7 @@ async function main() {
   /**
    * NFT
    */
-  const nftDraftInDraft = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -119,7 +119,7 @@ async function main() {
     },
   });
 
-  const nftPublishedInDraft = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 2 },
     update: {},
     create: {
@@ -132,7 +132,7 @@ async function main() {
     },
   });
 
-  const nftArchivedInDraft = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 3 },
     update: {},
     create: {
@@ -145,7 +145,7 @@ async function main() {
     },
   });
 
-  const nftDraftInPublished = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 4 },
     update: {},
     create: {
@@ -158,7 +158,7 @@ async function main() {
     },
   });
 
-  const nftPublishedInPublished = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 5 },
     update: {},
     create: {
@@ -171,7 +171,7 @@ async function main() {
     },
   });
 
-  const nftArchivedInPublished = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 6 },
     update: {},
     create: {
@@ -184,7 +184,7 @@ async function main() {
     },
   });
 
-  const nftDraftInArchived = await prisma.nft.upsert({
+  await prisma.nft.upsert({
     where: { id: 7 },
     update: {},
     create: {
@@ -227,7 +227,7 @@ async function main() {
    * Transaction
    */
 
-  const transaction1 = await prisma.transactions.upsert({
+  await prisma.transactions.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -238,7 +238,7 @@ async function main() {
     },
   });
 
-  const transaction2 = await prisma.transactions.upsert({
+  await prisma.transactions.upsert({
     where: { id: 2 },
     update: {},
     create: {
@@ -249,7 +249,7 @@ async function main() {
     },
   });
 
-  const Transaction3 = await prisma.transactions.upsert({
+  await prisma.transactions.upsert({
     where: { id: 3 },
     update: {},
     create: {
@@ -263,7 +263,7 @@ async function main() {
   /**
    * User Rating
    */
-  const rating1 = await prisma.userRating.upsert({
+  await prisma.userRating.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -274,7 +274,7 @@ async function main() {
     },
   });
 
-  const rating2 = await prisma.userRating.upsert({
+  await prisma.userRating.upsert({
     where: { id: 2 },
     update: {},
     create: {
@@ -285,7 +285,7 @@ async function main() {
     },
   });
 
-  const rating3 = await prisma.userRating.upsert({
+  await prisma.userRating.upsert({
     where: { id: 3 },
     update: {},
     create: {
@@ -296,7 +296,7 @@ async function main() {
     },
   });
 
-  const rating4 = await prisma.userRating.upsert({
+  await prisma.userRating.upsert({
     where: { id: 4 },
     update: {},
     create: {
@@ -307,7 +307,7 @@ async function main() {
     },
   });
 
-  const rating5 = await prisma.userRating.upsert({
+  await prisma.userRating.upsert({
     where: { id: 5 },
     update: {},
     create: {
