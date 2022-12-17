@@ -12,8 +12,8 @@ export class CollectionModel {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  logo: string;
+  @Field(() => String, { nullable: true })
+  logo: string | null;
 
   @Field(() => Status)
   status: Status;
