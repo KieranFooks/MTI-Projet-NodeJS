@@ -22,7 +22,7 @@ import {
   generateGetUserVariables,
   GETUSER_USER_OPERATION_NAME,
   GETUSER_USER_QUERY,
-} from './helpers/users/getuser.user.helper copy';
+} from './helpers/users/getuser.user.helper';
 import { Role } from '@prisma/client';
 
 const GRAPHQL_ENDPOINT = '/graphql';
