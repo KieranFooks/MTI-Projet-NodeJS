@@ -6,9 +6,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Role, Status } from '@prisma/client';
-import { GraphService } from 'src/common/graph/graph.service';
-import { JWTUser } from 'src/users/users.decorator';
-import { UsersService } from 'src/users/users.service';
+import { GraphService } from '../common/graph/graph.service';
+import { JWTUser } from '../users/users.decorator';
+import { UsersService } from '../users/users.service';
 import { CreateCollectionInput } from './dto/createCollection.input';
 import { UpdateCollectionInput } from './dto/updateCollection.input';
 

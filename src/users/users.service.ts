@@ -6,8 +6,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { AuthService } from 'src/common/auth/auth.service';
-import { GraphService } from 'src/common/graph/graph.service';
+import { AuthService } from '../common/auth/auth.service';
+import { GraphService } from '../common/graph/graph.service';
 import { LoginInput } from './dto/login-input.input';
 import { UserCreateInput } from './dto/user-create-input.input';
 import { PaginationInput } from './dto/pagination.input';

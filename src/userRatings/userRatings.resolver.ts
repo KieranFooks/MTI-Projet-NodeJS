@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CurrentUser, JWTUser } from 'src/users/users.decorator';
+import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { UserRatingModel } from '../Models/userRating';
 import { RateNftInput } from './dto/rateNFT.input';
 import { UserRatingsService } from './userRatings.service';

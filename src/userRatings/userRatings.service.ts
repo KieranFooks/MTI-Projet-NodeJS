@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { GraphService } from 'src/common/graph/graph.service';
+import { GraphService } from '../common/graph/graph.service';
 import { RateNftInput } from './dto/rateNFT.input';
 
 @Injectable()

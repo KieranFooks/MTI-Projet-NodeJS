@@ -6,7 +6,7 @@ import { UserCreateInput } from './dto/user-create-input.input';
 import { LoginInput } from './dto/login-input.input';
 import { LoggedUserOutput } from './dto/logged-user.output';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
 import { Example } from './users.interceptor';
 import { PaginationInput } from './dto/pagination.input';
 

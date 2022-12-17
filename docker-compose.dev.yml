@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  nft_platform:
+    container_name: nft_platform
+    image: postgres:14.2
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+
+  nft_test_db:
+    container_name: nft_test_db
+    image: postgres:14.2
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5433:5432'

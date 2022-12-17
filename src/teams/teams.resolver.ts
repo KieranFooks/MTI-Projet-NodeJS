@@ -1,13 +1,12 @@
 import 'reflect-metadata';
 import { Resolver, Args, Query, Mutation, Int } from '@nestjs/graphql';
-import { TeamModel } from 'src/Models/team';
+import { TeamModel } from '../Models/team';
 import { TeamsService } from './teams.service';
 import { UseGuards, UseInterceptors } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
-import { VerifyIfUserInTeam } from './teams.interceptor';
-import { CurrentUser, JWTUser } from 'src/users/users.decorator';
+import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
+import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { Role } from '@prisma/client';
-import { VerifyIfAdim } from 'src/users/users.interceptor';
+import { VerifyIfAdim } from '../users/users.interceptor';
 
 @Resolver(TeamModel)
 export class TeamsResolver {
@@ -35,7 +34,6 @@ export class TeamsResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(VerifyIfUserInTeam)
   @Mutation(() => TeamModel)
   async inviteUserToTeam(
     @Args('userEmail') userEmail: string,
@@ -43,8 +41,9 @@ export class TeamsResolver {
     @CurrentUser() jwtUser: JWTUser,
   ) {
     return await this.teamsService.inviteUserToTeam(
+      jwtUser,
       userEmail,
-      teamId ?? jwtUser.payload.teamId,
+      teamId,
       jwtUser.payload.role == Role.ADMIN,
     );
   }

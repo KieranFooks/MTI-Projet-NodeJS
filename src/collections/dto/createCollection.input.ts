@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { NftInput } from 'src/Models/nft';
+import { NftInput } from '../../Models/nft';
 
 @InputType()
 export class CreateCollectionInput {

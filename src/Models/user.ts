@@ -28,9 +28,6 @@ export class UserModel {
   @Field(() => [TransactionsModel], { nullable: 'items' })
   buyTransactions: TransactionsModel[];
 
-  @Field(() => [TransactionsModel], { nullable: 'items' })
-  sellTransactions: TransactionsModel[];
-
   @Field(() => [UserRatingModel], { nullable: 'items' })
   userRating: UserRatingModel[];
 }

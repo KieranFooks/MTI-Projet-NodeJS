@@ -1,9 +1,8 @@
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import console from 'console';
-import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from 'src/common/auth/optional-jwt-auth.guard';
-import { CurrentUser, JWTUser } from 'src/users/users.decorator';
+import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../common/auth/optional-jwt-auth.guard';
+import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { CollectionModel } from '../Models/collection';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionInput } from './dto/createCollection.input';

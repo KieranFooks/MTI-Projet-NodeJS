@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { User } from '@prisma/client';
 import { AuthService } from 'src/common/auth/auth.service';
 import { GraphqlModule } from 'src/common/graphql.module';
-import { UserModel } from 'src/Models/user';
 import { prismaMock } from 'src/prismaMock';
 import { LoginInput } from './dto/login-input.input';
 import { PaginationInput } from './dto/pagination.input';
@@ -35,16 +34,6 @@ const prismaExistingCreatedUser: User = {
   password: 'password',
   role: 'USER',
   teamId: null,
-};
-
-const createdUser: UserModel = {
-  id: 1,
-  ...createUserInput,
-  role: 'USER',
-  team: null,
-  buyTransactions: [],
-  sellTransactions: [],
-  userRating: [],
 };
 
 describe('UsersService', () => {

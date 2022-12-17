@@ -6,11 +6,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Role, Status } from '@prisma/client';
-import { CollectionsService } from 'src/collections/collections.service';
-import { GraphService } from 'src/common/graph/graph.service';
-import { TeamsService } from 'src/teams/teams.service';
-import { JWTUser } from 'src/users/users.decorator';
-import { UsersService } from 'src/users/users.service';
+import { CollectionsService } from '../collections/collections.service';
+import { GraphService } from '../common/graph/graph.service';
+import { TeamsService } from '../teams/teams.service';
+import { JWTUser } from '../users/users.decorator';
+import { UsersService } from '../users/users.service';
 import { CreateNftInput } from './dto/createNft.input';
 import { UpdateNftInput } from './dto/updateNft.input';
 

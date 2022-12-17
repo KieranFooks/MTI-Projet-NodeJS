@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from 'src/users/users.module';
-import { UsersService } from 'src/users/users.service';
+import { UsersModule } from '../users/users.module';
 import { CommonModule } from '../common/common.module';
 import { CollectionsResolver } from './collections.resolver';
 import { CollectionsService } from './collections.service';

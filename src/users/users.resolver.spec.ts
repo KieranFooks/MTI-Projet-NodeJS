@@ -18,7 +18,6 @@ const createdUser: UserModel = {
   role: 'USER',
   team: null,
   buyTransactions: [],
-  sellTransactions: [],
   userRating: [],
 };
 

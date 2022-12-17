@@ -13,7 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "db:dev": "docker-compose up -d && yarn prisma:migrate:dev",
+    "db:dev": "docker-compose -f docker-compose.dev.yml up -d && yarn prisma:migrate:dev",
     "db:deploy": "docker-compose up -d && yarn prisma:migrate:deploy",
     "db:down": "docker-compose down",
     "prisma:generate": "prisma generate",
@@ -22,10 +22,11 @@
     "prisma:seed": "prisma db seed",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
+    "test:migrate": "dotenv -e .env.test -- npx prisma migrate dev",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "dotenv -e .env.test -- jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.6",
@@ -39,11 +40,13 @@
     "@prisma/client": "^4.7.1",
     "apollo-server-express": "^3.11.1",
     "bcrypt": "^5.1.0",
+    "chance": "^1.1.9",
     "graphql": "^16.6.0",
     "jest-mock-extended": "^3.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "prisma": "^4.7.1",
+    "randexp": "^0.5.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
