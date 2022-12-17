@@ -44,17 +44,14 @@ export class NftModel {
 
 @InputType('nftInput')
 export class NftInput {
-  @Field()
+  @Field(() => String)
   name: string;
 
   @Field(() => String)
   image: string;
 
-  @Field(() => String)
-  price: number;
-
   @Field(() => Int)
-  collectionId: number;
+  price: number;
 }
 
 registerEnumType(Status, {

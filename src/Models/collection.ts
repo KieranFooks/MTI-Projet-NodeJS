@@ -22,7 +22,7 @@ export class CollectionModel {
   timeAutoArchive: Date | null;
 
   @Field(() => [NftModel], { nullable: 'items' })
-  Nfts: NftModel[];
+  nfts: NftModel[];
 
   @Field(() => TeamModel)
   creatorTeam: TeamModel;

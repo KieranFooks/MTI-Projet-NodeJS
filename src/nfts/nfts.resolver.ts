@@ -1,6 +1,7 @@
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from 'src/common/auth/optional-jwt-auth.guard';
 import { CurrentUser, JWTUser } from 'src/users/users.decorator';
 import { NftModel } from '../Models/nft';
 import { CreateNftInput } from './dto/createNft.input';
@@ -11,11 +12,13 @@ import { NftsService } from './nfts.service';
 export class NftsResolver {
   constructor(@Inject(NftsService) private nftsService: NftsService) {}
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Query(() => [NftModel], { nullable: 'items' })
   nfts(@CurrentUser() user: JWTUser) {
-    return this.nftsService.fintAll(user);
+    return this.nftsService.findAll(user);
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Query(() => NftModel, { nullable: true })
   nft(@Args('id') id: number, @CurrentUser() user: JWTUser) {
     return this.nftsService.findOne(id, user);

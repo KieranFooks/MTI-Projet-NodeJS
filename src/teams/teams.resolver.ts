@@ -39,7 +39,7 @@ export class TeamsResolver {
   @Mutation(() => TeamModel)
   async inviteUserToTeam(
     @Args('userEmail') userEmail: string,
-    @Args({ name: 'teamId', nullable: true }) teamId: number | null,
+    @Args({ name: 'teamId', nullable: true }) teamId: number,
     @CurrentUser() jwtUser: JWTUser,
   ) {
     return await this.teamsService.inviteUserToTeam(

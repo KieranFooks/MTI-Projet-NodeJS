@@ -10,6 +10,7 @@ import { CollectionsService } from 'src/collections/collections.service';
 import { GraphService } from 'src/common/graph/graph.service';
 import { TeamsService } from 'src/teams/teams.service';
 import { JWTUser } from 'src/users/users.decorator';
+import { UsersService } from 'src/users/users.service';
 import { CreateNftInput } from './dto/createNft.input';
 import { UpdateNftInput } from './dto/updateNft.input';
 
@@ -19,9 +20,10 @@ export class NftsService {
     @Inject(GraphService) private graphService: GraphService,
     @Inject(TeamsService) private teamsService: TeamsService,
     @Inject(CollectionsService) private collectionsService: CollectionsService,
+    @Inject(UsersService) private usersService: UsersService,
   ) {}
 
-  fintAll(user: JWTUser) {
+  async findAll(user: JWTUser) {
     if (user == null) {
       return this.graphService.nft.findMany({
         where: {
@@ -30,15 +32,34 @@ export class NftsService {
         include: {
           team: false,
           collection: false,
+          transactions: false,
+          userRating: false,
         },
       });
     }
 
-    if (user.payload.role === Role.ADMIN) {
+    const userDb = (await this.usersService.findOne(user.userId))!;
+    if (userDb.role === Role.ADMIN) {
       return this.graphService.nft.findMany({
         include: {
           team: true,
           collection: true,
+          transactions: true,
+          userRating: true,
+        },
+      });
+    }
+
+    if (userDb.teamId == null) {
+      return this.graphService.nft.findMany({
+        where: {
+          status: Status.PUBLISHED,
+        },
+        include: {
+          team: true,
+          collection: true,
+          transactions: true,
+          userRating: true,
         },
       });
     }
@@ -50,18 +71,20 @@ export class NftsService {
             status: Status.PUBLISHED,
           },
           {
-            teamId: user.payload.teamId,
+            teamId: userDb.teamId,
           },
         ],
       },
       include: {
         team: true,
         collection: true,
+        transactions: true,
+        userRating: true,
       },
     });
   }
 
-  findOne(id: number, user: JWTUser) {
+  async findOne(id: number, user: JWTUser) {
     if (user == null) {
       return this.graphService.nft.findFirst({
         where: {
@@ -75,10 +98,24 @@ export class NftsService {
       });
     }
 
-    if (user.payload.role === Role.ADMIN) {
+    const userDb = (await this.usersService.findOne(user.userId))!;
+    if (userDb.role === Role.ADMIN) {
       return this.graphService.nft.findUnique({
         where: {
           id,
+        },
+        include: {
+          team: true,
+          collection: true,
+        },
+      });
+    }
+
+    if (userDb.teamId == null) {
+      return this.graphService.nft.findFirst({
+        where: {
+          id,
+          status: Status.PUBLISHED,
         },
         include: {
           team: true,
@@ -114,10 +151,17 @@ export class NftsService {
       throw new BadRequestException(`Price must be greater than 0`);
     }
 
-    if (user.payload.role != Role.ADMIN) {
-      const collection = await this.collectionsService.findOne(
-        nftCreateInput.collectionId,
+    const collection = await this.collectionsService.findOne(
+      nftCreateInput.collectionId,
+      user,
+    );
+    if (collection == null) {
+      throw new NotFoundException(
+        `Collection with id ${nftCreateInput.collectionId} does not exist`,
       );
+    }
+
+    if (user.payload.role != Role.ADMIN) {
       if (collection.creatorTeamId !== user.payload.teamId) {
         throw new ConflictException(
           `Collection with id ${nftCreateInput.collectionId} does not belong to your team`,
@@ -135,7 +179,7 @@ export class NftsService {
         name: nftCreateInput.name,
         image: nftCreateInput.image,
         price: nftCreateInput.price,
-        status: nftCreateInput.status,
+        status: nftCreateInput.status ?? undefined,
         teamId: user.payload.teamId,
         collectionId: nftCreateInput.collectionId,
       },
@@ -182,8 +226,8 @@ export class NftsService {
         id: nftUpdateInput.id,
       },
       data: {
-        price: nftUpdateInput.price,
-        status: nftUpdateInput.status,
+        price: nftUpdateInput.price ?? undefined,
+        status: nftUpdateInput.status ?? undefined,
       },
       include: {
         collection: true,
@@ -204,6 +248,11 @@ export class NftsService {
     }
 
     const buyerTeamDb = await this.teamsService.findOne(user.payload.teamId);
+    if (!buyerTeamDb) {
+      throw new NotFoundException(
+        `Team with id ${user.payload.teamId} not found`,
+      );
+    }
     if (buyerTeamDb.balance < nftDb.price) {
       throw new ConflictException(`Not enough balance`);
     }

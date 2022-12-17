@@ -13,5 +13,5 @@ export class CreateCollectionInput {
   timeAutoArchiving: Date | null;
 
   @Field(() => [NftInput], { nullable: 'items' })
-  Nfts: NftInput[];
+  nfts: NftInput[];
 }
