@@ -4,6 +4,7 @@ import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { UserRatingModel } from '../Models/userRating';
 import { RateNftInput } from './dto/rateNFT.input';
 import { UserRatingsService } from './userRatings.service';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 
 @Resolver(UserRatingModel)
 export class UserRatingsResolver {
@@ -12,8 +13,12 @@ export class UserRatingsResolver {
   ) {}
 
   @Query(() => [UserRatingModel], { nullable: 'items' })
-  myRatings(@CurrentUser() user: JWTUser) {
-    return this.userRatingsService.findByUserId(user.userId);
+  myRatings(
+    @CurrentUser() user: JWTUser,
+    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    pagination: PaginationInput | null,
+  ) {
+    return this.userRatingsService.findByUserId(user.userId, pagination);
   }
 
   @Mutation(() => UserRatingModel)

@@ -7,6 +7,7 @@ import { NftModel } from '../Models/nft';
 import { CreateNftInput } from './dto/createNft.input';
 import { UpdateNftInput } from './dto/updateNft.input';
 import { NftsService } from './nfts.service';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 
 @Resolver(NftModel)
 export class NftsResolver {
@@ -14,8 +15,12 @@ export class NftsResolver {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Query(() => [NftModel], { nullable: 'items' })
-  nfts(@CurrentUser() user: JWTUser) {
-    return this.nftsService.findAll(user);
+  nfts(
+    @CurrentUser() user: JWTUser,
+    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    pagination: PaginationInput | null,
+  ) {
+    return this.nftsService.findAll(user, pagination);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

@@ -7,6 +7,7 @@ import { CollectionModel } from '../Models/collection';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionInput } from './dto/createCollection.input';
 import { UpdateCollectionInput } from './dto/updateCollection.input';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 
 @Resolver(CollectionModel)
 export class CollectionsResolver {
@@ -16,8 +17,12 @@ export class CollectionsResolver {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Query(() => [CollectionModel], { nullable: 'items' })
-  collections(@CurrentUser() user: JWTUser) {
-    return this.collectionsService.findAll(user);
+  collections(
+    @CurrentUser() user: JWTUser,
+    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    pagination: PaginationInput | null,
+  ) {
+    return this.collectionsService.findAll(user, pagination);
   }
 
   @UseGuards(OptionalJwtAuthGuard)

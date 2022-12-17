@@ -5,6 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 import { JWTUser } from 'src/users/users.decorator';
 import { GraphService } from '../common/graph/graph.service';
 
@@ -12,11 +13,15 @@ import { GraphService } from '../common/graph/graph.service';
 export class TeamsService {
   constructor(@Inject(GraphService) private graphService: GraphService) {}
 
-  async findAll() {
+  async findAll(pagination: PaginationInput | null) {
     return this.graphService.team.findMany({
       include: {
         users: true,
+        ownedNft: true,
+        createdCollection: true,
       },
+      take: pagination?.limit,
+      skip: pagination?.offset,
     });
   }
 
@@ -25,6 +30,8 @@ export class TeamsService {
       where: { id },
       include: {
         users: true,
+        ownedNft: true,
+        createdCollection: true,
       },
     });
   }
@@ -33,11 +40,17 @@ export class TeamsService {
     const newTeam = await this.graphService.team.create({
       data: {
         name,
+        balance: 0,
         users: {
           connect: {
             id: userId,
           },
         },
+      },
+      include: {
+        users: true,
+        ownedNft: true,
+        createdCollection: true,
       },
     });
 
@@ -70,6 +83,10 @@ export class TeamsService {
       throw new UnauthorizedException('You are not in a team');
     }
 
+    if (!teamId && user.teamId) {
+      teamId = user.teamId;
+    }
+
     if (!isAdmin && (!user.teamId || user.teamId !== teamId)) {
       throw new UnauthorizedException(
         'You are not allowed to invite users to this team',
@@ -93,6 +110,11 @@ export class TeamsService {
 
     return this.graphService.team.findUnique({
       where: { id: teamId },
+      include: {
+        users: true,
+        ownedNft: true,
+        createdCollection: true,
+      },
     });
   }
 

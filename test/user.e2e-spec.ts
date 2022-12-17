@@ -48,7 +48,7 @@ describe('Users resolver (e2e)', () => {
   });
 
   afterAll(async () => {
-    clearDatabase();
+    await clearDatabase();
   });
 
   it('Should create an user with user mutation', () => {

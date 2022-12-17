@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Role, Status } from '@prisma/client';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 import { GraphService } from '../common/graph/graph.service';
 import { JWTUser } from '../users/users.decorator';
 import { UsersService } from '../users/users.service';
@@ -19,7 +20,7 @@ export class CollectionsService {
     @Inject(UsersService) private usersService: UsersService,
   ) {}
 
-  async findAll(user: JWTUser) {
+  async findAll(user: JWTUser, pagination: PaginationInput | null) {
     if (user == null) {
       return this.graphService.collection.findMany({
         where: {
@@ -33,6 +34,8 @@ export class CollectionsService {
             },
           },
         },
+        take: pagination?.limit,
+        skip: pagination?.offset,
       });
     }
 

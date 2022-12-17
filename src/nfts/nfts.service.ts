@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Role, Status } from '@prisma/client';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 import { CollectionsService } from '../collections/collections.service';
 import { GraphService } from '../common/graph/graph.service';
 import { TeamsService } from '../teams/teams.service';
@@ -23,7 +24,7 @@ export class NftsService {
     @Inject(UsersService) private usersService: UsersService,
   ) {}
 
-  async findAll(user: JWTUser) {
+  async findAll(user: JWTUser, pagination: PaginationInput | null) {
     if (user == null) {
       return this.graphService.nft.findMany({
         where: {
@@ -35,6 +36,8 @@ export class NftsService {
           transactions: false,
           userRating: false,
         },
+        take: pagination?.limit,
+        skip: pagination?.offset,
       });
     }
 

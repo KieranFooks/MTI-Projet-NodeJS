@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { PaginationInput } from 'src/users/dto/pagination.input';
 import { GraphService } from '../common/graph/graph.service';
 import { RateNftInput } from './dto/rateNFT.input';
 
@@ -6,7 +7,7 @@ import { RateNftInput } from './dto/rateNFT.input';
 export class UserRatingsService {
   constructor(@Inject(GraphService) private graphService: GraphService) {}
 
-  findByUserId(id: number) {
+  findByUserId(id: number, pagination: PaginationInput | null) {
     return this.graphService.userRating.findMany({
       where: {
         userId: id,
@@ -15,6 +16,8 @@ export class UserRatingsService {
         nft: true,
         user: true,
       },
+      take: pagination?.limit,
+      skip: pagination?.offset,
     });
   }
 

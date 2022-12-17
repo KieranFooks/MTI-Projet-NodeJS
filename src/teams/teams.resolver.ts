@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
 import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { Role } from '@prisma/client';
 import { VerifyIfAdim } from '../users/users.interceptor';
+import { PaginationInput } from '../users/dto/pagination.input';
 
 @Resolver(TeamModel)
 export class TeamsResolver {
@@ -14,13 +15,16 @@ export class TeamsResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [TeamModel])
-  teams() {
-    return this.teamsService.findAll();
+  teams(
+    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    pagination: PaginationInput | null,
+  ) {
+    return this.teamsService.findAll(pagination);
   }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => TeamModel, { nullable: true })
-  team(@Args('id') id: number) {
+  team(@Args('id', { type: () => Int }) id: number) {
     return this.teamsService.findOne(id);
   }
 
@@ -37,7 +41,7 @@ export class TeamsResolver {
   @Mutation(() => TeamModel)
   async inviteUserToTeam(
     @Args('userEmail') userEmail: string,
-    @Args({ name: 'teamId', nullable: true }) teamId: number,
+    @Args({ name: 'teamId', nullable: true, type: () => Int }) teamId: number,
     @CurrentUser() jwtUser: JWTUser,
   ) {
     return await this.teamsService.inviteUserToTeam(
