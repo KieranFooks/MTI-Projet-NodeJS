@@ -61,4 +61,12 @@ export class TeamsResolver {
   ) {
     return await this.teamsService.increaseTeamBalance(teamId, money);
   }
+
+  @Query(() => [TeamModel])
+  async bestSellers(
+    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    pagination: PaginationInput | null,
+  ) {
+    return await this.teamsService.bestSellers(pagination);
+  }
 }

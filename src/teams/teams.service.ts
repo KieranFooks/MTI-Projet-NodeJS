@@ -130,4 +130,34 @@ export class TeamsService {
       throw new NotFoundException('Team not found');
     }
   }
+
+  async bestSellers(pagination: PaginationInput | null) {
+    //return teams with the sum of the amount of transactions
+    const teams = await this.graphService.team.findMany({
+      include: {
+        transactions: {
+          select: {
+            amount: true,
+          },
+        },
+        users: true,
+        ownedNft: true,
+        createdCollection: true,
+      },
+      take: pagination?.limit,
+      skip: pagination?.offset,
+    });
+
+    const teamsWithTotalTransactions = teams.map((team) => {
+      const totalTransactions = team.transactions.reduce(
+        (acc, curr) => acc + curr.amount,
+        0,
+      );
+      return { ...team, totalTransactions };
+    });
+
+    return teamsWithTotalTransactions.sort(
+      (a, b) => b.totalTransactions - a.totalTransactions,
+    );
+  }
 }

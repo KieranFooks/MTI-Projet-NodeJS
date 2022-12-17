@@ -4,7 +4,7 @@ import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { UserRatingModel } from '../Models/userRating';
 import { RateNftInput } from './dto/rateNFT.input';
 import { UserRatingsService } from './userRatings.service';
-import { PaginationInput } from 'src/users/dto/pagination.input';
+import { PaginationInput } from '../users/dto/pagination.input';
 
 @Resolver(UserRatingModel)
 export class UserRatingsResolver {

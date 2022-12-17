@@ -21,7 +21,7 @@ import {
   GET_TEAM_OPERATION_NAME,
   GET_TEAM_QUERY,
 } from './helpers/teams/getteam.teams.helper';
-import { User } from '@prisma/client';
+import { Team, User } from '@prisma/client';
 import {
   generateLoginUserVariables,
   SIGNIN_USER_MUTATION,
@@ -32,6 +32,10 @@ import {
   INVITEUSER_TEAM_MUTATION,
   INVITEUSER_TEAM_OPERATION_NAME,
 } from './helpers/teams/inviteuser.teams.helper';
+import {
+  BESTSELLERS_TEAMS_QUERY,
+  BESTSLLERS_TEAMS_OPERATION_NAME,
+} from './helpers/teams/bestsellers.teams.helper';
 
 const GRAPHQL_ENDPOINT = '/graphql';
 
@@ -41,6 +45,8 @@ describe('Teams resolver (e2e)', () => {
   let user1: User;
   let user2: User;
   let user3: User;
+  let team1: Team;
+  let team2: Team;
   let admin: User;
   let BEARER_JWT;
   let ADMIN_BEARER_JWT;
@@ -54,10 +60,12 @@ describe('Teams resolver (e2e)', () => {
     await app.init();
 
     const dbValues = await initDatabaseForTeamsTests();
-    user1 = dbValues.user1;
+    user1 = dbValues.user;
     user2 = dbValues.user2;
     user3 = dbValues.user3;
     admin = dbValues.admin;
+    team1 = dbValues.team1;
+    team2 = dbValues.team2;
 
     await request(app.getHttpServer())
       .post(GRAPHQL_ENDPOINT)
@@ -123,13 +131,15 @@ describe('Teams resolver (e2e)', () => {
       })
       .expect(({ body }) => {
         expect(body.data.teams).toBeDefined();
-        expect(body.data.teams[0].id).toEqual(team.id);
-        expect(body.data.teams[0].name).toEqual(team.name);
-        expect(body.data.teams[0].balance).toEqual(team.balance);
-        expect(body.data.teams[0].users).toBeDefined();
-        expect(body.data.teams[0].users[0].id).toEqual(team.users[0].id);
-        expect(body.data.teams[0].createdCollection).toBeDefined();
-        expect(body.data.teams[0].ownedNft).toBeDefined();
+        expect(body.data.teams.length).toEqual(3);
+        const index = body.data.teams.length - 1;
+        expect(body.data.teams[index].id).toEqual(team.id);
+        expect(body.data.teams[index].name).toEqual(team.name);
+        expect(body.data.teams[index].balance).toEqual(team.balance);
+        expect(body.data.teams[index].users).toBeDefined();
+        expect(body.data.teams[index].users[0].id).toEqual(team.users[0].id);
+        expect(body.data.teams[index].createdCollection).toBeDefined();
+        expect(body.data.teams[index].ownedNft).toBeDefined();
       });
   });
 
@@ -199,6 +209,23 @@ describe('Teams resolver (e2e)', () => {
         expect(body.data.inviteUserToTeam.users[2].id).toEqual(user3.id);
         expect(body.data.inviteUserToTeam.createdCollection).toBeDefined();
         expect(body.data.inviteUserToTeam.ownedNft).toBeDefined();
+      });
+  });
+
+  it('Should get the best sellers', () => {
+    return request(app.getHttpServer())
+      .post(GRAPHQL_ENDPOINT)
+      .send({
+        operationName: BESTSLLERS_TEAMS_OPERATION_NAME,
+        query: BESTSELLERS_TEAMS_QUERY,
+      })
+      .expect((res) => {
+        const { body } = res;
+        expect(body.data.bestSellers).toBeDefined();
+        expect(body.data.bestSellers.length).toEqual(3);
+        expect(body.data.bestSellers[0].id).toEqual(team2.id);
+        expect(body.data.bestSellers[1].id).toEqual(team1.id);
+        expect(body.data.bestSellers[2].id).toEqual(team.id);
       });
   });
 });

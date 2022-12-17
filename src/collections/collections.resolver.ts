@@ -7,7 +7,7 @@ import { CollectionModel } from '../Models/collection';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionInput } from './dto/createCollection.input';
 import { UpdateCollectionInput } from './dto/updateCollection.input';
-import { PaginationInput } from 'src/users/dto/pagination.input';
+import { PaginationInput } from '../users/dto/pagination.input';
 
 @Resolver(CollectionModel)
 export class CollectionsResolver {

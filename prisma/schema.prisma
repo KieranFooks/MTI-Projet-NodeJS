@@ -30,7 +30,7 @@ model User {
   role              Role   @default(USER)
   teamId            Int?
 
-  team            Team?          @relation(fields: [teamId], references: [id])
+  team            Team?          @relation(fields: [teamId], references: [id], onDelete: Cascade)
   buyTransactions Transactions[]
   userRating      UserRating[]
 }
@@ -55,8 +55,8 @@ model Nft {
   collectionId Int
   teamId       Int
 
-  team         Team           @relation(fields: [teamId], references: [id])
-  collection   Collection     @relation(fields: [collectionId], references: [id])
+  team         Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  collection   Collection     @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   transactions Transactions[]
   userRating   UserRating[]
 }
@@ -69,9 +69,9 @@ model Transactions {
   sellerTeamId Int
   buyerId      Int
 
-  buyer      User @relation(fields: [buyerId], references: [id])
-  nft        Nft  @relation(fields: [nftId], references: [id])
-  sellerTeam Team @relation(fields: [sellerTeamId], references: [id])
+  buyer      User @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  nft        Nft  @relation(fields: [nftId], references: [id], onDelete: Cascade)
+  sellerTeam Team @relation(fields: [sellerTeamId], references: [id], onDelete: Cascade)
 }
 
 model Collection {
@@ -82,7 +82,7 @@ model Collection {
   timeAutoArchiving DateTime?
   creatorTeamId     Int
 
-  creatorTeam Team  @relation(fields: [creatorTeamId], references: [id])
+  creatorTeam Team  @relation(fields: [creatorTeamId], references: [id], onDelete: Cascade)
   nfts        Nft[]
 }
 
@@ -93,8 +93,8 @@ model UserRating {
   nftId     Int
   userId    Int
 
-  nft  Nft  @relation(fields: [nftId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  nft  Nft  @relation(fields: [nftId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([nftId, userId])
 }

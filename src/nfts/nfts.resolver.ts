@@ -7,7 +7,7 @@ import { NftModel } from '../Models/nft';
 import { CreateNftInput } from './dto/createNft.input';
 import { UpdateNftInput } from './dto/updateNft.input';
 import { NftsService } from './nfts.service';
-import { PaginationInput } from 'src/users/dto/pagination.input';
+import { PaginationInput } from '../users/dto/pagination.input';
 
 @Resolver(NftModel)
 export class NftsResolver {
