@@ -1,5 +1,5 @@
 import { Inject, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../common/auth/optional-jwt-auth.guard';
 import { CurrentUser, JWTUser } from '../users/users.decorator';
@@ -8,6 +8,7 @@ import { CreateNftInput } from './dto/createNft.input';
 import { UpdateNftInput } from './dto/updateNft.input';
 import { NftsService } from './nfts.service';
 import { PaginationInput } from '../users/dto/pagination.input';
+import { MostRatedNftOutput } from './dto/most-rated-nft';
 
 @Resolver(NftModel)
 export class NftsResolver {
@@ -45,5 +46,13 @@ export class NftsResolver {
   @Mutation(() => NftModel)
   buyNft(@Args('id') id: number, @CurrentUser() user: JWTUser) {
     return this.nftsService.buyNft(id, user);
+  }
+
+  @Query(() => [MostRatedNftOutput])
+  mostRatedNfts(
+    @Args('top', { type: () => Int })
+    top: number,
+  ) {
+    return this.nftsService.mostRatedNfts(top);
   }
 }

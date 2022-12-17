@@ -146,10 +146,10 @@ export class TeamsService {
     });
 
     const teamsWithTotalTransactions = teams.map((team) => {
-      const amount = team.transactions.reduce(
-        (acc, curr) => acc + curr.amount,
-        0,
-      );
+      const amount =
+        team.transactions.length === 0
+          ? 0
+          : team.transactions.reduce((acc, curr) => acc + curr.amount, 0);
       return { ...team, amount };
     });
 

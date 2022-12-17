@@ -315,4 +315,34 @@ export class NftsService {
 
     return updatedNft;
   }
+
+  async mostRatedNfts(top: number) {
+    const nfts = await this.graphService.nft.findMany({
+      include: {
+        userRating: {
+          select: {
+            rate: true,
+          },
+        },
+      },
+    });
+
+    const nftsWithRating = nfts.map((nft) => {
+      const averageRate =
+        nft.userRating.length === 0
+          ? 0
+          : nft.userRating.reduce((acc, curr) => {
+              return acc + curr.rate;
+            }, 0) / nft.userRating.length;
+
+      return {
+        ...nft,
+        averageRate,
+      };
+    });
+
+    return nftsWithRating
+      .sort((a, b) => b.averageRate - a.averageRate)
+      .slice(0, top);
+  }
 }
