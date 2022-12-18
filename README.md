@@ -35,12 +35,6 @@
   yarn prisma:migrate:dev
   ```
 
-- Seed the database
-
-  ```sh
-  yarn prisma:seed
-  ```
-
 - Start the server
 
   ```sh
@@ -53,6 +47,13 @@
   ```
 
 ## Run tests
+
+- Add a `.env.test` file at the root of the project with the following content:
+
+  ```sh
+  DATABASE_URL="postgresql://user:password@localhost:5433/nft?schema=public"
+  JWT_SECRET=Som3thinGSe3cret
+  ```
 
 - Make sure the database is running
 
