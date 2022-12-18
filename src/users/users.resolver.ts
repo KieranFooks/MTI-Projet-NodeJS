@@ -15,9 +15,17 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [UserModel], { nullable: 'items' })
+  @Query(() => [UserModel], {
+    nullable: 'items',
+    name: 'users',
+    description: 'Get all users. You need to be logged in to use this query.',
+  })
   async allUsers(
-    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    @Args('pagination', {
+      nullable: true,
+      type: () => PaginationInput,
+      description: 'Optional argument used to paginate the query.',
+    })
     pagination: PaginationInput | null,
   ) {
     return this.usersService.findAll(pagination);
@@ -25,18 +33,44 @@ export class UsersResolver {
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(Example)
-  @Query(() => UserModel, { nullable: true })
-  async user(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => UserModel, {
+    nullable: true,
+    description: 'Get user by id. You need to be logged in to use this query.',
+  })
+  async user(
+    @Args('id', {
+      type: () => Int,
+      description: 'The id of the user.',
+    })
+    id: number,
+  ) {
     return this.usersService.findOne(id);
   }
 
-  @Mutation(() => String, { nullable: true })
-  async signUp(@Args('user') user: UserCreateInput) {
+  @Mutation(() => String, {
+    nullable: true,
+    name: 'signUp',
+    description: 'Sign up. It will return your password.',
+  })
+  async signUp(
+    @Args('user', {
+      description:
+        'The new user informations with email, name and blockchain address.',
+    })
+    user: UserCreateInput,
+  ) {
     return this.usersService.create(user);
   }
 
-  @Mutation(() => LoggedUserOutput, { nullable: true })
-  async signIn(@Args('user') loginUserInput: LoginInput) {
+  @Mutation(() => LoggedUserOutput, {
+    nullable: true,
+    name: 'signIn',
+    description: 'Sign in. It will return a JWT token.',
+  })
+  async signIn(
+    @Args('user', { description: 'The user email and password' })
+    loginUserInput: LoginInput,
+  ) {
     return this.usersService.login(loginUserInput);
   }
 }

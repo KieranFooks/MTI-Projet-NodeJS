@@ -12,17 +12,32 @@ export class UserRatingsResolver {
     @Inject(UserRatingsService) private userRatingsService: UserRatingsService,
   ) {}
 
-  @Query(() => [UserRatingModel], { nullable: 'items' })
+  @Query(() => [UserRatingModel], {
+    nullable: 'items',
+    name: 'myRatings',
+    description: 'Get all ratings of the logged user.',
+  })
   myRatings(
     @CurrentUser() user: JWTUser,
-    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    @Args('pagination', {
+      nullable: true,
+      type: () => PaginationInput,
+      description: 'Optional argument used to paginate the query.',
+    })
     pagination: PaginationInput | null,
   ) {
     return this.userRatingsService.findByUserId(user.userId, pagination);
   }
 
-  @Mutation(() => UserRatingModel)
-  rateNft(@Args('rating') rating: RateNftInput, @CurrentUser() user: JWTUser) {
+  @Mutation(() => UserRatingModel, {
+    name: 'rateNft',
+    description: 'Rate an NFT of another team.',
+  })
+  rateNft(
+    @Args('rating', { description: 'The nft to rate and the rate.' })
+    rating: RateNftInput,
+    @CurrentUser() user: JWTUser,
+  ) {
     return this.userRatingsService.create(rating, user.userId);
   }
 }

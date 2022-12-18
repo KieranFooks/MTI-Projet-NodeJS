@@ -12,16 +12,27 @@ export class TransactionsResolver {
     private transactionsService: TransactionsService,
   ) {}
 
-  @Query(() => [TransactionsModel], { nullable: 'items' })
+  @Query(() => [TransactionsModel], {
+    nullable: 'items',
+    name: 'lastSells',
+    description: 'Get the last X sells.',
+  })
   lastSells(
-    @Args('top', { type: () => Int })
+    @Args('top', {
+      type: () => Int,
+      description: 'The number of sells to return.',
+    })
     top: number,
   ) {
     return this.transactionsService.lastSells(top);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [TransactionsModel], { nullable: 'items' })
+  @Query(() => [TransactionsModel], {
+    nullable: 'items',
+    name: 'myLastSells',
+    description: 'Get the last sells of the logged user.',
+  })
   myLastSells(@CurrentUser() user: JWTUser) {
     return this.transactionsService.myLastSells(user);
   }

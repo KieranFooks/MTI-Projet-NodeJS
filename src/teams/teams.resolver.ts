@@ -15,22 +15,45 @@ export class TeamsResolver {
   constructor(private readonly teamsService: TeamsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [TeamModel])
+  @Query(() => [TeamModel], {
+    nullable: 'items',
+    name: 'teams',
+    description: 'Get all teams. You need to be logged in to use this query.',
+  })
   teams(
-    @Args('pagination', { nullable: true, type: () => PaginationInput })
+    @Args('pagination', {
+      nullable: true,
+      type: () => PaginationInput,
+      description: 'Optional argument used to paginate the query.',
+    })
     pagination: PaginationInput | null,
   ) {
     return this.teamsService.findAll(pagination);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => TeamModel, { nullable: true })
-  team(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => TeamModel, {
+    nullable: true,
+    name: 'team',
+    description: 'Get team by id. You need to be logged in to use this query.',
+  })
+  team(
+    @Args('id', {
+      type: () => Int,
+      description: 'The id of the requested team.',
+    })
+    id: number,
+  ) {
     return this.teamsService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => TeamModel)
+  @Mutation(() => TeamModel, {
+    nullable: true,
+    name: 'createTeam',
+    description:
+      'Create a new team. You need to be logged in to use this mutation.',
+  })
   async createTeam(
     @CurrentUser() jwtUser: JWTUser,
     @Args('name') name: string,
@@ -39,10 +62,21 @@ export class TeamsResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => TeamModel)
+  @Mutation(() => TeamModel, {
+    name: 'inviteUserToTeam',
+    description:
+      'Invite a user to a team. You need to be logged in to use this mutation.',
+  })
   async inviteUserToTeam(
     @Args('userEmail') userEmail: string,
-    @Args({ name: 'teamId', nullable: true, type: () => Int }) teamId: number,
+    @Args({
+      name: 'teamId',
+      nullable: true,
+      type: () => Int,
+      description:
+        'The id of team where the user is invited. If the user is not an admin, this id needs to be the id of the team where the user is a member.',
+    })
+    teamId: number,
     @CurrentUser() jwtUser: JWTUser,
   ) {
     return await this.teamsService.inviteUserToTeam(
@@ -55,17 +89,37 @@ export class TeamsResolver {
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(VerifyIfAdim)
-  @Mutation(() => TeamModel)
+  @Mutation(() => TeamModel, {
+    name: 'increaseTeamBalance',
+    description: 'Increase the balance of a team. You need to be an admin.',
+  })
   async increaseTeamBalance(
-    @Args({ name: 'teamId', type: () => Int }) teamId: number,
-    @Args({ name: 'money', type: () => Int }) money: number,
+    @Args({
+      name: 'teamId',
+      type: () => Int,
+      description: 'The id of the team',
+    })
+    teamId: number,
+    @Args({
+      name: 'money',
+      type: () => Int,
+      description: 'The amount of money that will be add the team balance',
+    })
+    money: number,
   ) {
     return await this.teamsService.increaseTeamBalance(teamId, money);
   }
 
-  @Query(() => [BestSellersTeamOutput], { nullable: 'items' })
+  @Query(() => [BestSellersTeamOutput], {
+    nullable: 'items',
+    name: 'bestSellersTeam',
+    description: 'Get the best sellers teams.',
+  })
   async bestSellersTeam(
-    @Args('top', { type: () => Int })
+    @Args('top', {
+      type: () => Int,
+      description: 'The number of teams to return.',
+    })
     top: number,
   ) {
     return await this.teamsService.bestSellers(top);
