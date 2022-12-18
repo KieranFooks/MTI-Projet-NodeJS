@@ -94,13 +94,13 @@ describe('Users resolver (e2e)', () => {
       })
       .expect(200)
       .expect((res) => {
-        expect(res.body.data.allUsers).toBeDefined();
-        expect(res.body.data.allUsers).toBeInstanceOf(Array);
-        expect(res.body.data.allUsers.length).toBeGreaterThan(0);
-        id = res.body.data.allUsers[0].id;
-        expect(res.body.data.allUsers[0].email).toEqual(user.email);
-        expect(res.body.data.allUsers[0].name).toEqual(user.name);
-        expect(res.body.data.allUsers[0].blockchainAddress).toEqual(
+        expect(res.body.data.users).toBeDefined();
+        expect(res.body.data.users).toBeInstanceOf(Array);
+        expect(res.body.data.users.length).toBeGreaterThan(0);
+        id = res.body.data.users[0].id;
+        expect(res.body.data.users[0].email).toEqual(user.email);
+        expect(res.body.data.users[0].name).toEqual(user.name);
+        expect(res.body.data.users[0].blockchainAddress).toEqual(
           user.blockchainAddress,
         );
       });
@@ -146,7 +146,7 @@ describe('Users resolver (e2e)', () => {
       });
   });
 
-  it('Sould return an error when creating user with wrong blockchain address', () => {
+  it('Should return an error when creating user with wrong blockchain address', () => {
     const userCreateInput = generateCreateUserVariables().userCreateInput;
     user = userCreateInput;
     user.blockchainAddress = '0x123';

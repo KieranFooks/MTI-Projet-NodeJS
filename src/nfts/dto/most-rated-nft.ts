@@ -1,9 +1,9 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { Status } from '@prisma/client';
-import { CollectionModel } from 'src/Models/collection';
-import { TeamModel } from 'src/Models/team';
-import { TransactionsModel } from 'src/Models/transactions';
-import { UserRatingModel } from 'src/Models/userRating';
+import { CollectionModel } from '../../Models/collection';
+import { TeamModel } from '../../Models/team';
+import { TransactionsModel } from '../../Models/transactions';
+import { UserRatingModel } from '../../Models/userRating';
 
 @ObjectType({ description: 'NFT with average rating' })
 export class MostRatedNftOutput {

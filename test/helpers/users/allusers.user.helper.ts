@@ -1,6 +1,6 @@
 export const ALLUSERS_USER_OPERATION_NAME = 'AllUsers';
 export const ALLUSERS_USER_QUERY = `query AllUsers($pagination: PaginationInput){
-  allUsers(pagination:$pagination){
+  users(pagination:$pagination){
     id
     email
     name

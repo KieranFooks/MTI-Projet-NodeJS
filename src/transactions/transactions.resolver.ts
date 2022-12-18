@@ -1,7 +1,7 @@
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Int, Query, Resolver } from '@nestjs/graphql';
-import { JwtAuthGuard } from 'src/common/auth/jwt-auth.guard';
-import { CurrentUser, JWTUser } from 'src/users/users.decorator';
+import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
+import { CurrentUser, JWTUser } from '../users/users.decorator';
 import { TransactionsModel } from '../Models/transactions';
 import { TransactionsService } from './transactions.service';
 

@@ -53,7 +53,8 @@ export class LogAccountCreation implements NestInterceptor {
     const ctx = GqlExecutionContext.create(context);
     const { req } = ctx.getContext();
 
-    const email = req.body.variables.user.email;
+    const variables: any = Object.values(req.body.variables)[0];
+    const email = variables.email;
     const role = 'USER';
 
     return next.handle().pipe(
