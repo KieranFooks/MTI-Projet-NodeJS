@@ -4,9 +4,11 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  Logger,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class Example implements NestInterceptor {
@@ -39,6 +41,26 @@ export class VerifyIfAdim implements NestInterceptor {
 
     throw new UnauthorizedException(
       'You need to be an admin to access this resource',
+    );
+  }
+}
+
+@Injectable()
+export class LogAccountCreation implements NestInterceptor {
+  private readonly logger = new Logger('AccountCreation');
+
+  async intercept(context: ExecutionContext, next: CallHandler) {
+    const ctx = GqlExecutionContext.create(context);
+    const { req } = ctx.getContext();
+
+    const email = req.body.variables.user.email;
+    const role = 'USER';
+
+    return next.handle().pipe(
+      map((data) => {
+        this.logger.log(`User ${email} with role ${role} created`);
+        return data;
+      }),
     );
   }
 }

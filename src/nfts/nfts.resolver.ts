@@ -1,4 +1,4 @@
-import { Inject, UseGuards } from '@nestjs/common';
+import { Inject, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../common/auth/optional-jwt-auth.guard';
@@ -9,6 +9,7 @@ import { UpdateNftInput } from './dto/updateNft.input';
 import { NftsService } from './nfts.service';
 import { PaginationInput } from '../users/dto/pagination.input';
 import { MostRatedNftOutput } from './dto/most-rated-nft';
+import { LogSellNft } from './nfts.interceptor';
 
 @Resolver(NftModel)
 export class NftsResolver {
@@ -74,6 +75,7 @@ export class NftsResolver {
     return this.nftsService.update(nft, user);
   }
 
+  @UseInterceptors(LogSellNft)
   @UseGuards(JwtAuthGuard)
   @Mutation(() => NftModel, {
     name: 'buyNft',

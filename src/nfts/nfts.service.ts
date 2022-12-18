@@ -256,6 +256,9 @@ export class NftsService {
         `Team with id ${user.payload.teamId} not found`,
       );
     }
+    if (buyerTeamDb.id === nftDb.teamId) {
+      throw new ConflictException(`You can't buy your own NFT`);
+    }
     if (buyerTeamDb.balance < nftDb.price) {
       throw new ConflictException(`Not enough balance`);
     }
@@ -306,11 +309,11 @@ export class NftsService {
       },
     });
 
-    const [updatedNft] = await this.graphService.$transaction([
-      updateNftPromise,
+    const [_, _1, _2, updatedNft] = await this.graphService.$transaction([
       updateBuyerTeamPromise,
       updateSellerTeamPromise,
       createTransactionPromise,
+      updateNftPromise,
     ]);
 
     return updatedNft;
