@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { CollectionsModule } from './collections/collections.module';
 import { CommonModule } from './common/common.module';
 import { NftsModule } from './nfts/nfts.module';
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     NftsModule,
     UserRatingsModule,
     TransactionsModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [],
   providers: [],

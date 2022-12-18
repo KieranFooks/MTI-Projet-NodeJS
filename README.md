@@ -164,3 +164,6 @@ For the Must Do section, we have implemented the following queries and mutations
 - Query: `mostRatedNfts`
 - Query: `lastSells`
 - Query: `myLastSells` (requires JWT authorization)
+
+### Auto archiving
+Archiving is done automatically every minute by a cron job. The cron job is defined in the `src/collections/collections.service.ts` file.

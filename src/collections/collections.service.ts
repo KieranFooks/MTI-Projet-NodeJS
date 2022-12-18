@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Role, Status } from '@prisma/client';
 import { PaginationInput } from 'src/users/dto/pagination.input';
 import { GraphService } from '../common/graph/graph.service';
@@ -267,5 +268,22 @@ export class CollectionsService {
     return colletionsWithTotalTransactions
       .sort((a, b) => b.amount - a.amount)
       .slice(0, top);
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  async autoArchiveCollections() {
+    await this.graphService.collection.updateMany({
+      where: {
+        timeAutoArchiving: {
+          lte: new Date(),
+        },
+        status: {
+          not: Status.ARCHIVED,
+        },
+      },
+      data: {
+        status: Status.ARCHIVED,
+      },
+    });
   }
 }
