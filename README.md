@@ -1,5 +1,10 @@
 # Projet NodeJS
 
+## Authors
+hugo.poujol
+gabriel.lecherf
+kieran.fooks
+
 ## Prerequisites
 
 - NodeJS 16
@@ -84,22 +89,22 @@ The project is divided into 3 main parts:
 
 - The `src` folder contains the source code of the project
 - The `tests` folder contains the tests of the project
-- The `prisma` folder contains the database schema and migrations
+- The `prisma` folder contains the database schema, migrations and seed
 
 ### The `src` folder
 
 The `src` folder contains the source code of the project. It is divided into 3 main parts:
 
 - The `common` folder contains the common code of the project
-- The `Models` folder contains the models of the database
+- The `Models` folder contains the GraphQL models
 - The other folders are the modules of the project. One for each table of the database.
 
 ### The `common` folder
 
 The `common` folder contains the common code of the project. It is divided into 2 main parts:
 
-- The `auth` folder contains the code related to the jwt authentication
-- The `graph` folder contains the code related to the graphql
+- The `auth` folder contains the code related to the JWT authentication
+- The `graph` folder contains the code related to the GraphQL
 
 ### The others folder
 
@@ -122,26 +127,26 @@ The `tests` folder contains the integrations tests of the project. It is divided
 
 ### The `prisma` folder
 
-The `prisma` folder contains the database schema and migrations. It is divided into 3 main parts:
+The `prisma` folder contains the database schema, migrations and seed. It is divided into 3 main parts:
 
 - The `migrations` folder contains the migrations of the database
 - The `schema.prisma` file contains the schema of the database
 - The `seed.ts` file contains the seed of the database
 
-## The Tests
+## Tests
 
 Not all the code is tested because we didn't have enough time to do it. So we prioritized the integration tests over the unit tests.
 
 ## The GraphQL API
 
 The GraphQL API is accessible at the following url: http://localhost:3000/graphql
-All the asked queries and mutations have been implemented.
+All the required queries and mutations have been implemented.
 
 ### Authentication
 
 In order to create a new user, you have to call the `signUp` mutation. It will return the generated password.
 
-In order to get the jwt token, you have to call the `signIn` mutation. It will return the jwt token.
+In order to get the JWT token, you have to call the `signIn` mutation. It will return the JWT token.
 
 An admin user has been created in the seed. You can use it to test the admin queries and mutations. The email is `admin@admin.com` and the password is `admin`.
 
@@ -153,4 +158,4 @@ For the Must Do section, we have implemented the following queries and mutations
 - Query: `bestSellersCollections`
 - Query: `mostRatedNfts`
 - Query: `lastSells`
-- Query: `myLastSells` (require jwt authorization)
+- Query: `myLastSells` (requires JWT authorization)
