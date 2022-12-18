@@ -2,7 +2,9 @@
 
 ## Authors
 hugo.poujol
+
 gabriel.lecherf
+
 kieran.fooks
 
 ## Prerequisites
