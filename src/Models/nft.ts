@@ -1,5 +1,6 @@
 import {
   Field,
+  Float,
   InputType,
   Int,
   ObjectType,
@@ -12,45 +13,56 @@ import { TeamModel } from './team';
 import { TransactionsModel } from './transactions';
 import { UserRatingModel } from './userRating';
 
-@ObjectType('nft')
+@ObjectType('nft', {
+  description:
+    'A non-fungible token. Is owned by a team and belongs to a collection',
+})
 export class NftModel {
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Unique identifier for the NFT' })
   id: number;
 
-  @Field()
+  @Field(() => String, { description: 'Name of the NFT' })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Image of the NFT' })
   image: string;
 
-  @Field(() => String)
+  @Field(() => Float, { description: 'Price of the NFT' })
   price: number;
 
-  @Field(() => Status)
+  @Field(() => Status, { description: 'Status of the NFT' })
   status: Status;
 
-  @Field(() => TeamModel)
+  @Field(() => TeamModel, { description: 'Team that owns the NFT' })
   team: TeamModel;
 
-  @Field(() => [TransactionsModel], { nullable: 'items' })
+  @Field(() => [TransactionsModel], {
+    nullable: 'items',
+    description: 'Transaction history of the NFT',
+  })
   transactions: TransactionsModel[];
 
-  @Field(() => CollectionModel)
+  @Field(() => CollectionModel, {
+    description: 'Collection the NFT belongs to',
+  })
   collection: CollectionModel;
 
-  @Field(() => [UserRatingModel], { nullable: 'items' })
+  @Field(() => [UserRatingModel], {
+    nullable: 'items',
+    description: 'User rating of the NFT',
+  })
   userRating: UserRatingModel[];
 }
 
-@InputType('nftInput')
+@InputType('nftInput', { description: 'Input for creating a new NFT' })
 export class NftInput {
-  @Field(() => String)
+  @Field(() => String, { description: 'Name of the NFT' })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Image of the NFT' })
   image: string;
 
-  @Field(() => Int)
+  @Field(() => Float, { description: 'Price of the NFT' })
   price: number;
 }
 

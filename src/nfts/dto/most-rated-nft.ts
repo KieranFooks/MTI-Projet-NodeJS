@@ -5,35 +5,43 @@ import { TeamModel } from 'src/Models/team';
 import { TransactionsModel } from 'src/Models/transactions';
 import { UserRatingModel } from 'src/Models/userRating';
 
-@ObjectType()
+@ObjectType({ description: 'NFT with average rating' })
 export class MostRatedNftOutput {
-  @Field(() => Int)
+  @Field(() => Int, { description: 'Unique identifier for the NFT' })
   id: number;
 
-  @Field()
+  @Field(() => String, { description: 'Name of the NFT' })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { description: 'Image of the NFT' })
   image: string;
 
-  @Field(() => String)
+  @Field(() => Int, { description: 'Price of the NFT' })
   price: number;
 
-  @Field(() => Status)
+  @Field(() => Status, { description: 'Status of the NFT' })
   status: Status;
 
-  @Field(() => TeamModel)
+  @Field(() => TeamModel, { description: 'Team that owns the NFT' })
   team: TeamModel;
 
-  @Field(() => [TransactionsModel], { nullable: 'items' })
+  @Field(() => [TransactionsModel], {
+    nullable: 'items',
+    description: 'Transaction history of the NFT',
+  })
   transactions: TransactionsModel[];
 
-  @Field(() => CollectionModel)
+  @Field(() => CollectionModel, {
+    description: 'Collection the NFT belongs to',
+  })
   collection: CollectionModel;
 
-  @Field(() => [UserRatingModel], { nullable: 'items' })
+  @Field(() => [UserRatingModel], {
+    nullable: 'items',
+    description: 'User ratings of the NFT',
+  })
   userRating: UserRatingModel[];
 
-  @Field(() => Float)
+  @Field(() => Float, { description: 'Average rating of the NFT' })
   averageRate: number;
 }
