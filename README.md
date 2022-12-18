@@ -72,7 +72,7 @@ kieran.fooks
   yarn prisma:migrate:dev
   ```
 
-- Start the unit tests
+- Start all tests
 
   ```sh
   yarn test
@@ -81,6 +81,11 @@ kieran.fooks
 - Start the integration tests
   ```sh
   yarn test:e2e
+  ```
+
+- Start unit tests
+  ```sh
+  yarn test:unit
   ```
 
 ## The Architecture
